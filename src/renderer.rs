@@ -48,6 +48,35 @@ impl Hittable for Rect2d {
     }
 }
 
+struct Circle {
+    center: Vec2,
+    radius: f64,
+    color: Color,
+}
+
+impl Circle {
+    fn new(center: Vec2, radius: f64, color: Color) -> Self {
+        Circle {
+            center,
+            radius,
+            color,
+        }
+    }
+}
+
+impl Hittable for Circle {
+    fn hit(&self, pt: &Vec2) -> Option<Color> {
+        let dx = pt.x - self.center.x;
+        let dy = pt.y - self.center.y;
+        if dx * dx + dy * dy <= self.radius * self.radius {
+            Some(self.color)
+        } else {
+            None
+        }
+    }
+}
+
+
 struct Scene {
     objects: Vec<Box<dyn Hittable>>,
 }
@@ -98,6 +127,13 @@ impl Renderer {
             Vec2::new(0.2, 0.8),
             Color::new(128., 54., 204.),
         ));
+
+        renderer.scene.add_object(Circle::new(
+            Vec2::new(0.1, 0.3),
+            0.25,
+            Color::new(255., 0., 0.),
+        ));
+
         renderer
     }
 
@@ -108,17 +144,6 @@ impl Renderer {
                 y as f64 / self.height as f64,
             ))
             .unwrap_or(WHITE)
-
-        // let u = x as f64 / self.width as f64;
-        // let v = y as f64 / self.height as f64;
-
-        // if u > 0.2 && u < 0.8 && v > 0.2 && v < 0.8 {
-        //     BLACK
-        // } else {
-        //     WHITE
-        // }
-
-        //self.simple_gradient(x, y)
     }
 
     #[allow(dead_code)]
