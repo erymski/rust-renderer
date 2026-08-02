@@ -24,4 +24,21 @@ impl Vec3 {
             z: self.z / len,
         }
     }
+
+    pub fn scale(&self, k: f64) -> Self {
+        Vec3 {
+            x: k * self.x,
+            y: k * self.y,
+            z: k * self.z,
+        }
+    }
+
+    pub fn add(&self, other: &Vec3) -> Self {
+        Vec3 {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+
 }

@@ -2,12 +2,7 @@ use crate::vec3::Color;
 
 use crate::vec2::Vec2;
 
-pub const BLACK: Color = Color {
-    x: 0.0,
-    y: 0.0,
-    z: 0.0,
-};
-
+#[allow(dead_code)]
 pub const WHITE: Color = Color {
     x: 255.,
     y: 255.,
@@ -76,7 +71,6 @@ impl Hittable for Circle {
     }
 }
 
-
 struct Scene {
     objects: Vec<Box<dyn Hittable>>,
 }
@@ -138,12 +132,14 @@ impl Renderer {
     }
 
     pub fn calc_point(&self, x: u32, y: u32) -> Color {
-        self.scene
-            .hit(&Vec2::new(
-                x as f64 / self.width as f64,
-                y as f64 / self.height as f64,
-            ))
-            .unwrap_or(WHITE)
+        let color = match self.scene.hit(&Vec2::new(
+            x as f64 / self.width as f64,
+            y as f64 / self.height as f64,
+        )) {
+            Some(color) => color,
+            None => self.sky_gradient(x, y),
+        };
+        color
     }
 
     #[allow(dead_code)]
@@ -152,5 +148,24 @@ impl Renderer {
         let g = y as f64 / self.height as f64 * 255.0;
         let b = 128f64;
         Color::new(r as f64, g, b as f64)
+    }
+
+    fn sky_gradient(&self, _x: u32, y: u32) -> crate::vec3::Vec3 {
+
+        const WHITE: Color = Color {
+            x: 255.,
+            y: 255.,
+            z: 255.,
+        };
+
+        const BLUE: Color = Color {
+            x: 128.,
+            y: 192.,
+            z: 255.,
+        };
+
+        let a = y as f64 / self.height as f64;
+
+        BLUE.scale(1.0 - a).add(&WHITE.scale(a))
     }
 }
