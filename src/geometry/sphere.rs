@@ -14,18 +14,19 @@ impl Sphere {
 impl Hittable3d for Sphere {
     fn hit(&self, ray: &Ray) -> Option<Hit3d> {
         let oc = ray.from.sub(&self.center);
+        let oc_len = oc.length();
 
-        let b = 2.0 * oc.dot(&ray.dir);
-        let c = oc.length().powi(2) - (self.radius * self.radius);
+        let b = -2.0 * oc.dot(&ray.dir); // negate immediately, minor optimization to avoid negating later
+        let c = (oc_len * oc_len) - (self.radius * self.radius);
         let discriminant = b * b - 4.0 * c;
 
         if discriminant < 0.0 {
             None
         } else {
             let d_sqrt = discriminant.sqrt();
-            let mut t = -b - d_sqrt; // closest intersection point
+            let mut t = b - d_sqrt; // closest intersection point
             if t < 0.0 {
-                t = -b + d_sqrt; // farthest intersection point
+                t = b + d_sqrt; // farthest intersection point
                 if t < 0.0 {
                     return None;
                 }
