@@ -52,7 +52,7 @@ impl Vec3 {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::test_utils::assert_approx_eq;
+    use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
 
     use super::*;
 
@@ -62,5 +62,19 @@ mod tests {
         let p = Point3::new(1.0, 1.0, 1.0);
         let dist = v.dist_to(&p);
         assert_approx_eq(dist, (3f64).sqrt());
+    }
+
+    #[test]
+    fn vec3_scale() {
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        let scaled = v.scale(2.0);
+        assert_vec3_eq(&scaled, &Vec3::new(2.0, 4., 6.));
+    }
+
+    #[test]
+    fn vec3_length() {
+        let v = Vec3::new(1.0, 2.0, 2.0);
+        let len = v.length();
+        assert_approx_eq(len, 3.0);
     }
 }
