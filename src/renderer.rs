@@ -1,4 +1,7 @@
-use crate::geometry::{colors::{lerp, BLUE, WHITE}, Color, Hittable2d, Scene2d, Vec2};
+use crate::geometry::{
+    Color, Hittable2d, Scene2d, Vec2,
+    colors::{BLUE, WHITE, lerp},
+};
 
 #[allow(dead_code)]
 pub struct Renderer {
@@ -32,5 +35,4 @@ impl Renderer {
 
         lerp(a, &BLUE, &WHITE)
     }
-
 }

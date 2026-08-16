@@ -48,14 +48,13 @@ impl Vec3 {
         let dz = self.z - p.z;
         (dx * dx + dy * dy + dz * dz).sqrt()
     }
-
 }
 
 #[cfg(test)]
 mod tests {
     use crate::geometry::test_utils::assert_approx_eq;
 
-use super::*;
+    use super::*;
 
     #[test]
     fn vec3_dist_to() {

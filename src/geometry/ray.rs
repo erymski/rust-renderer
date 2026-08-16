@@ -21,7 +21,7 @@ impl Ray {
 #[cfg(test)]
 mod tests {
 
-use super::*;
+    use super::*;
 
     #[test]
     fn ray_from_two_points() {

@@ -28,7 +28,6 @@ mod tests {
     use super::*;
     use crate::geometry::test_utils::assert_approx_eq;
 
-
     #[test]
     fn vec2_dist_to() {
         let v = Vec2::new(0.0, 0.0);
