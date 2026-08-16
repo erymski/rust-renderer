@@ -15,22 +15,24 @@ impl Hittable3d for Sphere {
     fn hit(&self, ray: &Ray) -> Option<Hit3d> {
         let oc = ray.from.sub(&self.center);
 
-        let a = ray.dir.length() * ray.dir.length();
         let b = 2.0 * oc.dot(&ray.dir);
         let c = oc.length().powi(2) - (self.radius * self.radius);
-        let discriminant = b * b - 4.0 * a * c;
+        let discriminant = b * b - 4.0 * c;
 
         if discriminant < 0.0 {
             None
         } else {
             let d_sqrt = discriminant.sqrt();
-            let mut t = (-b - d_sqrt) / (2.0 * a);
+            let mut t = -b - d_sqrt; // closest intersection point
             if t < 0.0 {
-                t = (-b + d_sqrt) / (2.0 * a);
+                t = -b + d_sqrt; // farthest intersection point
                 if t < 0.0 {
                     return None;
                 }
             }
+
+            t *= 0.5;
+
             let point = ray.from.add(&ray.dir.scale(t));
             let normal = point.sub(&self.center).normalize();
             Some(Hit3d::new(point, normal, t))
@@ -40,6 +42,8 @@ impl Hittable3d for Sphere {
 
 #[cfg(test)]
 mod tests {
+    use crate::geometry::test_utils::assert_vec3_eq;
+
     use super::*;
 
     const SPHERE: Sphere = Sphere::new(Point3::new(0.0, 0.0, 0.0), 10.0);
@@ -48,15 +52,29 @@ mod tests {
 
     #[test]
     fn sphere_hit() {
-        const RAY: Ray = Ray::new(Point3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 1.0));
-        let hit = SPHERE.hit(&RAY);
-        assert!(hit.is_some());
+        let rays = [
+            Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 1.0)),
+            Ray::new(Vec3::new(0.0, 0.0, 9.0), Vec3::new(0.0, 0.0, 1.0)),
+            Ray::new(Vec3::new(0.0, 0.0, 11.0), Vec3::new(0.0, 0.0, -1.0)),
+        ];
+
+        for ray in rays {
+            let hit = SPHERE.hit(&ray);
+            assert!(hit.is_some());
+            assert_vec3_eq(&hit.unwrap().point, &Vec3::new(0.0, 0.0, 10.0));
+        }
     }
 
     #[test]
     fn sphere_miss() {
-        const RAY: Ray = Ray::new(Point3::new(0.0, 0.0, -15.0), Vec3::new(0.0, 0.0, -1.0));
-        let hit = SPHERE.hit(&RAY);
-        assert!(hit.is_none());
+        let rays = [
+            Ray::new(Point3::new(0.0, 0.0, -15.0), Vec3::new(0.0, 0.0, -1.0)),
+            Ray::new(Point3::new(0.0, 0.0, -15.0), Vec3::new(0.0, 1.0, 0.0)),
+            Ray::new(Point3::new(0.0, 0.0, 15.0), Vec3::new(0.0, 0.0, 1.0)),
+        ];
+        for ray in rays {
+            let hit = SPHERE.hit(&ray);
+            assert!(hit.is_none());
+        }
     }
 }
