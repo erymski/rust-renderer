@@ -4,6 +4,7 @@ pub(crate) mod ray;
 pub(crate) mod rect2d;
 pub(crate) mod circle;
 pub(crate) mod scene2d;
+pub(crate) mod colors;
 
 pub(crate) trait Hittable2d {
     fn hit(&self, pt: &Vec2) -> Option<Color>;
