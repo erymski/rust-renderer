@@ -42,11 +42,21 @@ impl Vec3 {
         }
     }
 
+    pub fn sub(&self, other: &Vec3) -> Self {
+        Vec3 {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
+    }
+
     pub fn dist_to(&self, p: &Point3) -> f64 {
-        let dx = self.x - p.x;
-        let dy = self.y - p.y;
-        let dz = self.z - p.z;
-        (dx * dx + dy * dy + dz * dz).sqrt()
+        let delta = self.sub(p);
+        delta.length()
+    }
+
+    pub fn dot(&self, other: &Vec3) -> f64 {
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 }
 
@@ -76,5 +86,36 @@ mod tests {
         let v = Vec3::new(1.0, 2.0, 2.0);
         let len = v.length();
         assert_approx_eq(len, 3.0);
+    }
+
+    #[test]
+    fn vec3_normalize() {
+        let v = Vec3::new(1.0, 2.0, 2.0);
+        let normalized = v.normalize();
+        assert_approx_eq(normalized.length(), 1.0);
+    }
+
+    #[test]
+    fn vec3_dot() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(4.0, -5.0, 6.0);
+        let dot = v1.dot(&v2);
+        assert_approx_eq(dot, 12.0);
+    }
+
+    #[test]
+    fn vec3_dot_opposite() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0).normalize();
+        let v2 = Vec3::new(-1.0, -2.0, -3.0).normalize();
+        let dot = v1.dot(&v2);
+        assert_approx_eq(dot, -1.0);
+    }
+
+    #[test]
+    fn vec3_dot_perpendicular() {
+        let v1 = Vec3::new(1.0, 0.0, 0.0);
+        let v2 = Vec3::new(0.0, 1.0, 0.0);
+        let dot = v1.dot(&v2);
+        assert_approx_eq(dot, 0.0);
     }
 }

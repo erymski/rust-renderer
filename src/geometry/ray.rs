@@ -1,9 +1,10 @@
 use crate::geometry::vec3::{Point3, Vec3};
 
 pub struct Ray {
-    from: Point3,
-    dir: Vec3, // direction vector, normalized
-    len: f64,
+    pub from: Point3,
+    /// Normalized direction vector
+    pub dir: Vec3,
+    pub len: f64, // TODO: do we need it?
 }
 
 impl Ray {
@@ -12,8 +13,9 @@ impl Ray {
     }
 
     pub fn from_points(from: Point3, to: Point3) -> Self {
-        let dir = to.add(&from.scale(-1.0)).normalize();
-        let len = to.add(&from.scale(-1.0)).length();
+        let delta = to.sub(&from);
+        let dir = delta.normalize();
+        let len = delta.length();
         Ray { from, dir, len }
     }
 }
