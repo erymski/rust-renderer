@@ -1,17 +1,17 @@
 use crate::geometry::{Color, Hittable2d, Vec2};
 
-pub(crate) struct Scene2d {
+pub struct Scene2d {
     objects: Vec<Box<dyn Hittable2d>>,
 }
 
 impl Scene2d {
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Scene2d {
             objects: Vec::new(),
         }
     }
 
-    pub(crate) fn add_object<T>(&mut self, object: T)
+    pub fn add_object<T>(&mut self, object: T)
     where
         T: Hittable2d + 'static,
     {

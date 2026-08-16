@@ -4,19 +4,17 @@ pub struct Ray {
     pub from: Point3,
     /// Normalized direction vector
     pub dir: Vec3,
-    pub len: f64, // TODO: do we need it?
 }
 
 impl Ray {
-    pub fn new(from: Point3, dir: Vec3, len: f64) -> Self {
-        Ray { from, dir, len }
+    pub const fn new(from: Point3, dir: Vec3) -> Self {
+        Ray { from, dir }
     }
 
     pub fn from_points(from: Point3, to: Point3) -> Self {
         let delta = to.sub(&from);
         let dir = delta.normalize();
-        let len = delta.length();
-        Ray { from, dir, len }
+        Ray { from, dir }
     }
 }
 
@@ -40,7 +38,5 @@ mod tests {
         assert_eq!(ray.dir.x, normalized);
         assert_eq!(ray.dir.y, normalized);
         assert_eq!(ray.dir.z, normalized);
-
-        assert_eq!(ray.len, (3f64).sqrt());
     }
 }
