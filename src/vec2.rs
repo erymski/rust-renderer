@@ -8,10 +8,10 @@ impl Vec2 {
         Vec2 { x, y }
     }
 
-    pub fn scale(k: f64, v: &Vec2) -> Self {
+    pub fn scale(self, k: f64) -> Self {
         Vec2 {
-            x: k * v.x,
-            y: k * v.y,
+            x: k * self.x,
+            y: k * self.y,
         }
     }
 }
