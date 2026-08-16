@@ -10,8 +10,6 @@ fn main() {
 
     let renderer = renderer::Renderer::new(width as usize, height as usize);
 
-    //    let pt = Vec3::new(1.0, 2.0, 3.0);
-
     let mut img = RgbImage::new(width, height);
     for x in 0..width {
         for y in 0..height {
@@ -21,6 +19,4 @@ fn main() {
     }
 
     img.save("c:/delme/render2.png").unwrap();
-
-    //    println!("Hello, world! {} has length {}", pt.x, pt.length());
 }
