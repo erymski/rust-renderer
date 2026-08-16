@@ -1,6 +1,5 @@
-use crate::vec3::Color;
-
-use crate::vec2::Vec2;
+use crate::geometry::vec3::{Color, Vec3};
+use crate::geometry::vec2::Vec2;
 
 #[allow(dead_code)]
 pub const WHITE: Color = Color {
@@ -143,14 +142,14 @@ impl Renderer {
     }
 
     #[allow(dead_code)]
-    fn simple_gradient(&self, x: u32, y: u32) -> crate::vec3::Vec3 {
+    fn simple_gradient(&self, x: u32, y: u32) -> Vec3 {
         let r = x as f64 / self.width as f64 * 255.0;
         let g = y as f64 / self.height as f64 * 255.0;
         let b = 128f64;
         Color::new(r as f64, g, b as f64)
     }
 
-    fn sky_gradient(&self, _x: u32, y: u32) -> crate::vec3::Vec3 {
+    fn sky_gradient(&self, _x: u32, y: u32) -> Vec3 {
 
         const WHITE: Color = Color {
             x: 255.,

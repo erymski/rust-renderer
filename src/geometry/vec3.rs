@@ -6,6 +6,7 @@ pub struct Vec3 {
 }
 
 pub type Color = Vec3;
+pub type Point3 = Vec3;
 
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
@@ -41,4 +42,26 @@ impl Vec3 {
         }
     }
 
+    pub fn dist_to(&self, p: &Point3) -> f64 {
+        let dx = self.x - p.x;
+        let dy = self.y - p.y;
+        let dz = self.z - p.z;
+        (dx * dx + dy * dy + dz * dz).sqrt()
+    }
+
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::geometry::test_utils::assert_approx_eq;
+
+use super::*;
+
+    #[test]
+    fn vec3_dist_to() {
+        let v = Vec3::new(0.0, 0.0, 0.0);
+        let p = Point3::new(1.0, 1.0, 1.0);
+        let dist = v.dist_to(&p);
+        assert_approx_eq(dist, (3f64).sqrt());
+    }
 }

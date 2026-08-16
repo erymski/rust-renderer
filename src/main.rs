@@ -1,8 +1,6 @@
 use image::{Rgb, RgbImage};
 
-mod vec2;
-mod vec3;
-// use vec3::{Color};
+mod geometry;
 
 mod renderer;
 
@@ -22,7 +20,7 @@ fn main() {
         }
     }
 
-    img.save("c:/delme/render.png").unwrap();
+    img.save("c:/delme/render2.png").unwrap();
 
     //    println!("Hello, world! {} has length {}", pt.x, pt.length());
 }
