@@ -20,11 +20,9 @@ pub(crate) trait Hittable3d {
 #[cfg(test)]
 mod test_utils;
 
-pub(crate) use circle::Circle;
 pub use hit3d::Hit3d;
 pub use ray::Ray;
-pub(crate) use rect2d::Rect2d;
-pub(crate) use scene2d::Scene2d;
+pub(crate) use scene3d::Scene3d;
 pub use sphere::Sphere;
 pub use vec2::Vec2;
 pub use vec3::{Color, Point3, Vec3};

@@ -4,20 +4,12 @@ mod geometry;
 
 mod renderer;
 
-use geometry::{Circle, Color, Rect2d, Scene2d, Vec2};
+use geometry::{Scene3d, Sphere, Vec3};
 
-fn build_scene() -> Scene2d {
-    let mut scene = Scene2d::new();
-    scene.add_object(Rect2d::new(
-        Vec2::new(0.2, 0.8),
-        Vec2::new(0.2, 0.8),
-        Color::new(128., 54., 204.),
-    ));
-    scene.add_object(Circle::new(
-        Vec2::new(0.1, 0.3),
-        0.25,
-        Color::new(255., 0., 0.),
-    ));
+fn build_scene() -> Scene3d {
+    let mut scene = Scene3d::new();
+    scene.add(Sphere::new(Vec3::new(0.2, 0.8, 0.0), 5.0));
+
     scene
 }
 
