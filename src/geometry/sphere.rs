@@ -26,6 +26,11 @@ impl Hittable3d for Sphere {
             let d_sqrt = discriminant.sqrt();
             let mut t = b - d_sqrt; // closest intersection point
             if t < 0.0 {
+                // D == 0 means "single result", kind-of touching sphere
+                if discriminant < 1e-10 {
+                    return None;
+                }
+
                 t = b + d_sqrt; // farthest intersection point
                 if t < 0.0 {
                     return None;

@@ -4,6 +4,7 @@ pub(crate) mod hit3d;
 pub(crate) mod ray;
 pub(crate) mod rect2d;
 pub(crate) mod scene2d;
+pub(crate) mod scene3d;
 pub(crate) mod sphere;
 pub(crate) mod vec2;
 pub(crate) mod vec3;
