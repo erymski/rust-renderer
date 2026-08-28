@@ -40,7 +40,10 @@ impl Hittable3d for Scene3d {
 #[cfg(test)]
 mod tests {
 
-    use crate::geometry::{Point3, Sphere};
+    use crate::geometry::{
+        Point3, Sphere,
+        test_utils::{assert_approx_eq, assert_vec3_eq},
+    };
 
     use super::*;
 
@@ -63,6 +66,36 @@ mod tests {
         assert!(hit.is_some());
 
         let value = hit.unwrap();
-        assert_eq!(value.t, 5.0) // distance from the ray's start
+        assert_approx_eq(value.t, 5.0); // distance from the ray's 
+        assert_vec3_eq(&value.point, &Point3::new(0.0, 0.0, 5.0));
+        assert_vec3_eq(&value.normal, &Point3::new(0.0, 0.0, -1.0));
+    }
+
+    #[test]
+    fn two_spheres_closest_first() {
+        let mut scene = Scene3d::new();
+        scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
+        scene.add(Sphere::new(Point3::new(0.0, 0.0, 16.0), 3.0));
+        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
+
+        let hit = scene.hit(&ray);
+        assert!(hit.is_some());
+
+        let value = hit.unwrap();
+        assert_approx_eq(value.t, 5.0) // distance from the ray's start
+    }
+
+    #[test]
+    fn two_spheres_closest_second() {
+        let mut scene = Scene3d::new();
+        scene.add(Sphere::new(Point3::new(0.0, 0.0, 16.0), 3.0));
+        scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
+        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
+
+        let hit = scene.hit(&ray);
+        assert!(hit.is_some());
+
+        let value = hit.unwrap();
+        assert_approx_eq(value.t, 5.0) // distance from the ray's start
     }
 }
