@@ -62,40 +62,25 @@ mod tests {
         scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
-        let hit = scene.hit(&ray);
-        assert!(hit.is_some());
-
-        let value = hit.unwrap();
-        assert_approx_eq(value.t, 5.0); // distance from the ray's 
+        let value = scene.hit(&ray).expect("expected ray to hit sphere");
+        assert_approx_eq(value.t, 5.0); // distance from the ray's start
         assert_vec3_eq(&value.point, &Point3::new(0.0, 0.0, 5.0));
         assert_vec3_eq(&value.normal, &Point3::new(0.0, 0.0, -1.0));
     }
 
     #[test]
-    fn two_spheres_closest_first() {
-        let mut scene = Scene3d::new();
-        scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
-        scene.add(Sphere::new(Point3::new(0.0, 0.0, 16.0), 3.0));
+    fn closest_sphere_independent_of_insertion_order() {
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
-        let hit = scene.hit(&ray);
-        assert!(hit.is_some());
+        // pairs of (z, radius) for spheres. Same spheres, but in different insertion orders
+        for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {
+            let mut scene = Scene3d::new();
+            for (z, radius) in spheres {
+                scene.add(Sphere::new(Point3::new(0.0, 0.0, z), radius));
+            }
 
-        let value = hit.unwrap();
-        assert_approx_eq(value.t, 5.0) // distance from the ray's start
-    }
-
-    #[test]
-    fn two_spheres_closest_second() {
-        let mut scene = Scene3d::new();
-        scene.add(Sphere::new(Point3::new(0.0, 0.0, 16.0), 3.0));
-        scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
-        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
-
-        let hit = scene.hit(&ray);
-        assert!(hit.is_some());
-
-        let value = hit.unwrap();
-        assert_approx_eq(value.t, 5.0) // distance from the ray's start
+            let value = scene.hit(&ray).expect("expected ray to hit sphere");
+            assert_approx_eq(value.t, 5.0);
+        }
     }
 }
