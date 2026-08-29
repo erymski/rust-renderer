@@ -15,7 +15,8 @@ impl Sphere {
         }
     }
 
-    pub const fn new_default(center: Point3, radius: f64) -> Self {
+    /// Creates a sphere with a default color (blue). Mostly for testing purposes.
+    pub const fn blue(center: Point3, radius: f64) -> Self {
         Sphere {
             center,
             radius,
@@ -72,7 +73,7 @@ mod tests {
 
     use super::*;
 
-    const SPHERE: Sphere = Sphere::new_default(Point3::new(0.0, 0.0, 0.0), 10.0);
+    const SPHERE: Sphere = Sphere::blue(Point3::new(0.0, 0.0, 0.0), 10.0);
 
     // TODO: need more tests for sphere hit/miss, including edge cases and rays that start inside the sphere
 

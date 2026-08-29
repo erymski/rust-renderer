@@ -59,7 +59,7 @@ mod tests {
     #[test]
     fn hit_sphere() {
         let mut scene = Scene::new();
-        scene.add(Sphere::new_default(Point3::new(0.0, 0.0, 10.0), 5.0));
+        scene.add(Sphere::blue(Point3::new(0.0, 0.0, 10.0), 5.0));
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
         let value = scene.intersect(&ray).expect("expected ray to hit sphere");
@@ -76,7 +76,7 @@ mod tests {
         for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {
             let mut scene = Scene::new();
             for (z, radius) in spheres {
-                scene.add(Sphere::new_default(Point3::new(0.0, 0.0, z), radius));
+                scene.add(Sphere::blue(Point3::new(0.0, 0.0, z), radius));
             }
 
             let value = scene.intersect(&ray).expect("expected ray to hit sphere");

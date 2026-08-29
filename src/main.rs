@@ -10,7 +10,7 @@ use crate::geometry::{Point3, Ray};
 
 fn build_scene() -> Scene {
     let mut scene = Scene::new();
-    scene.add(Sphere::new_default(Vec3::new(0.0, 0.0, -3.0), 1.5));
+    scene.add(Sphere::blue(Vec3::new(-0.3, 0.2, -3.0), 1.5));
     scene.add(Sphere::new(
         Vec3::new(0.5, -0.8, -7.0),
         4.0,
