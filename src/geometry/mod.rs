@@ -8,7 +8,11 @@ mod vec2;
 mod vec3;
 
 pub(crate) trait Hittable {
-    fn hit(&self, ray: &Ray) -> Option<Hit>;
+    fn intersect(&self, ray: &Ray) -> Option<Hit>;
+}
+
+pub(crate) trait Primitive: Hittable {
+    fn color(&self) -> vec3::Color;
 }
 
 #[cfg(test)]

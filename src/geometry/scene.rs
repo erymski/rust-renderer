@@ -20,10 +20,10 @@ impl Scene {
 }
 
 impl Hittable for Scene {
-    fn hit(&self, ray: &Ray) -> Option<Hit> {
+    fn intersect(&self, ray: &Ray) -> Option<Hit> {
         let mut hit: Option<Hit> = None;
         for object in &self.objects {
-            match object.hit(ray) {
+            match object.intersect(ray) {
                 Some(candidate) => {
                     if hit.as_ref().is_none_or(|current| current.t > candidate.t) {
                         hit = Some(candidate);
@@ -52,17 +52,17 @@ mod tests {
         let scene = Scene::new();
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
-        let hit = scene.hit(&ray);
+        let hit = scene.intersect(&ray);
         assert!(hit.is_none())
     }
 
     #[test]
     fn hit_sphere() {
         let mut scene = Scene::new();
-        scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
+        scene.add(Sphere::new_default(Point3::new(0.0, 0.0, 10.0), 5.0));
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
-        let value = scene.hit(&ray).expect("expected ray to hit sphere");
+        let value = scene.intersect(&ray).expect("expected ray to hit sphere");
         assert_approx_eq(value.t, 5.0); // distance from the ray's start
         assert_vec3_eq(&value.point, &Point3::new(0.0, 0.0, 5.0));
         assert_vec3_eq(&value.normal, &Point3::new(0.0, 0.0, -1.0));
@@ -76,10 +76,10 @@ mod tests {
         for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {
             let mut scene = Scene::new();
             for (z, radius) in spheres {
-                scene.add(Sphere::new(Point3::new(0.0, 0.0, z), radius));
+                scene.add(Sphere::new_default(Point3::new(0.0, 0.0, z), radius));
             }
 
-            let value = scene.hit(&ray).expect("expected ray to hit sphere");
+            let value = scene.intersect(&ray).expect("expected ray to hit sphere");
             assert_approx_eq(value.t, 5.0);
         }
     }

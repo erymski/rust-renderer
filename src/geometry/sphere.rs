@@ -1,18 +1,31 @@
-use crate::geometry::{Hit, Hittable, Point3, Ray};
+use crate::geometry::{Color, Hit, Hittable, Point3, Primitive, Ray, colors};
 
 pub struct Sphere {
     pub center: Point3,
     pub radius: f64,
+    color: Color,
 }
 
 impl Sphere {
-    pub const fn new(center: Point3, radius: f64) -> Self {
-        Sphere { center, radius }
+    pub const fn new(center: Point3, radius: f64, color: Color) -> Self {
+        Sphere {
+            center,
+            radius,
+            color,
+        }
+    }
+
+    pub const fn new_default(center: Point3, radius: f64) -> Self {
+        Sphere {
+            center,
+            radius,
+            color: colors::BLUE,
+        }
     }
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray) -> Option<Hit> {
+    fn intersect(&self, ray: &Ray) -> Option<Hit> {
         let oc = ray.from.sub(&self.center);
         let oc_len = oc.length();
 
@@ -41,8 +54,14 @@ impl Hittable for Sphere {
 
             let point = ray.from.add(&ray.dir.scale(t));
             let normal = point.sub(&self.center).normalize();
-            Some(Hit::new(point, normal, t))
+            Some(Hit::new(point, normal, t, self.color))
         }
+    }
+}
+
+impl Primitive for Sphere {
+    fn color(&self) -> Color {
+        self.color
     }
 }
 
@@ -53,7 +72,7 @@ mod tests {
 
     use super::*;
 
-    const SPHERE: Sphere = Sphere::new(Point3::new(0.0, 0.0, 0.0), 10.0);
+    const SPHERE: Sphere = Sphere::new_default(Point3::new(0.0, 0.0, 0.0), 10.0);
 
     // TODO: need more tests for sphere hit/miss, including edge cases and rays that start inside the sphere
 
@@ -66,7 +85,7 @@ mod tests {
         ];
 
         for ray in rays {
-            let hit = SPHERE.hit(&ray);
+            let hit = SPHERE.intersect(&ray);
             assert!(hit.is_some());
             assert_vec3_eq(&hit.unwrap().point, &Vec3::new(0.0, 0.0, 10.0));
         }
@@ -80,7 +99,7 @@ mod tests {
             Ray::new(Point3::new(0.0, 0.0, 15.0), Vec3::new(0.0, 0.0, 1.0)),
         ];
         for ray in rays {
-            let hit = SPHERE.hit(&ray);
+            let hit = SPHERE.intersect(&ray);
             assert!(hit.is_none());
         }
     }

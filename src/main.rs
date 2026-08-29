@@ -4,13 +4,18 @@ mod geometry;
 
 mod renderer;
 
-use geometry::{Camera, Scene, Sphere, Vec3};
+use geometry::{Camera, Color, Scene, Sphere, Vec3};
 
 use crate::geometry::{Point3, Ray};
 
 fn build_scene() -> Scene {
     let mut scene = Scene::new();
-    scene.add(Sphere::new(Vec3::new(0.0, 0.0, -3.0), 1.0));
+    scene.add(Sphere::new_default(Vec3::new(0.0, 0.0, -3.0), 1.5));
+    scene.add(Sphere::new(
+        Vec3::new(0.5, -0.8, -7.0),
+        4.0,
+        Color::new(255., 0., 0.),
+    ));
 
     scene
 }
