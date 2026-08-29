@@ -1,11 +1,13 @@
+use crate::geometry::{Point3, Vec3};
+
 pub struct Camera {
     pub eye: Point3,
     pub up: Vec3,
     /// direction and distance to viewport (length is important)
-    pub vpDir: Vec3,
+    pub vp_dir: Vec3,
 }
 
 pub struct Viewport {
-    width: i32,
-    height: i32,
+    pub width: u32,
+    pub height: u32,
 }

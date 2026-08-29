@@ -1,3 +1,4 @@
+mod camera;
 pub(crate) mod colors;
 mod hit;
 mod ray;
@@ -13,6 +14,7 @@ pub(crate) trait Hittable {
 #[cfg(test)]
 mod test_utils;
 
+pub use camera::{Camera, Viewport};
 pub use hit::Hit;
 pub use ray::Ray;
 pub use scene::Scene;

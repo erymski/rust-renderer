@@ -5,13 +5,13 @@ use crate::geometry::{
 
 #[allow(dead_code)]
 pub struct Renderer {
-    pub width: usize,
-    pub height: usize,
+    pub width: u32,
+    pub height: u32,
     scene: Scene,
 }
 
 impl Renderer {
-    pub fn new(width: usize, height: usize, scene: Scene) -> Self {
+    pub fn new(width: u32, height: u32, scene: Scene) -> Self {
         Renderer {
             width,
             height,
@@ -19,9 +19,7 @@ impl Renderer {
         }
     }
 
-    pub fn calc_point(&self, _x: u32, _y: u32) -> Color {
-        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
-
+    pub fn calc_point(&self, ray: &Ray) -> Color {
         let color = match self.scene.hit(&ray) {
             Some(_color) => BLUE,
             None => WHITE,

@@ -1,4 +1,4 @@
-use crate::geometry::{Hit, Hittable, Point3, Ray, Vec3};
+use crate::geometry::{Hit, Hittable, Point3, Ray};
 
 pub struct Sphere {
     pub center: Point3,
@@ -48,6 +48,7 @@ impl Hittable for Sphere {
 
 #[cfg(test)]
 mod tests {
+    use crate::geometry::Vec3;
     use crate::geometry::test_utils::assert_vec3_eq;
 
     use super::*;
