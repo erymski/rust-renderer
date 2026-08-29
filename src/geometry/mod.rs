@@ -1,10 +1,10 @@
 pub(crate) mod colors;
-pub(crate) mod hit;
-pub(crate) mod ray;
-pub(crate) mod scene;
-pub(crate) mod sphere;
-pub(crate) mod vec2;
-pub(crate) mod vec3;
+mod hit;
+mod ray;
+mod scene;
+mod sphere;
+mod vec2;
+mod vec3;
 
 pub(crate) trait Hittable {
     fn hit(&self, ray: &Ray) -> Option<Hit>;

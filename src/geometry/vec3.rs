@@ -10,49 +10,31 @@ pub type Point3 = Vec3;
 
 impl Vec3 {
     pub const fn new(x: f64, y: f64, z: f64) -> Self {
-        Vec3 { x, y, z }
+        Self { x, y, z }
     }
 
     pub fn length(&self) -> f64 {
-        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+        self.dot(self).sqrt()
     }
 
     pub fn normalize(&self) -> Self {
-        let len = self.length();
-        Vec3 {
-            x: self.x / len,
-            y: self.y / len,
-            z: self.z / len,
-        }
+        self.scale(1.0 / self.length())
     }
 
     pub fn scale(&self, k: f64) -> Self {
-        Vec3 {
-            x: k * self.x,
-            y: k * self.y,
-            z: k * self.z,
-        }
+        Self::new(k * self.x, k * self.y, k * self.z)
     }
 
     pub fn add(&self, other: &Vec3) -> Self {
-        Vec3 {
-            x: self.x + other.x,
-            y: self.y + other.y,
-            z: self.z + other.z,
-        }
+        Self::new(self.x + other.x, self.y + other.y, self.z + other.z)
     }
 
     pub fn sub(&self, other: &Vec3) -> Self {
-        Vec3 {
-            x: self.x - other.x,
-            y: self.y - other.y,
-            z: self.z - other.z,
-        }
+        Self::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 
     pub fn dist_to(&self, p: &Point3) -> f64 {
-        let delta = self.sub(p);
-        delta.length()
+        self.sub(p).length()
     }
 
     pub fn dot(&self, other: &Vec3) -> f64 {
