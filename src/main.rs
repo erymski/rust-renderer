@@ -48,7 +48,7 @@ fn main() {
         let offset_x_px = (x_px as f64) - half_width_px;
         let offset_x_world = offset_x_px * pixel_width;
         for y_px in 0..height_px {
-            let offset_y_px = (y_px as f64) - half_height_px; // TODO: most likely wrong direction
+            let offset_y_px = (height_px - y_px) as f64 - half_height_px;
             let offset_y_world = offset_y_px * pixel_height;
 
             let world_offset = Point3::new(offset_x_world, offset_y_world, 0.0).add(&vp_center);
