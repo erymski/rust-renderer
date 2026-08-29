@@ -1,4 +1,4 @@
-use crate::geometry::{Hit3d, Hittable3d, Point3, Ray, Vec3};
+use crate::geometry::{Hit, Hittable, Point3, Ray, Vec3};
 
 pub struct Sphere {
     pub center: Point3,
@@ -11,8 +11,8 @@ impl Sphere {
     }
 }
 
-impl Hittable3d for Sphere {
-    fn hit(&self, ray: &Ray) -> Option<Hit3d> {
+impl Hittable for Sphere {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
         let oc = ray.from.sub(&self.center);
         let oc_len = oc.length();
 
@@ -41,7 +41,7 @@ impl Hittable3d for Sphere {
 
             let point = ray.from.add(&ray.dir.scale(t));
             let normal = point.sub(&self.center).normalize();
-            Some(Hit3d::new(point, normal, t))
+            Some(Hit::new(point, normal, t))
         }
     }
 }

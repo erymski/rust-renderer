@@ -1,27 +1,27 @@
-use crate::geometry::{Hit3d, Hittable3d, Point3, Ray};
+use crate::geometry::{Hit, Hittable, Ray};
 
-pub struct Scene3d {
-    objects: Vec<Box<dyn Hittable3d>>,
+pub struct Scene {
+    objects: Vec<Box<dyn Hittable>>,
 }
 
-impl Scene3d {
+impl Scene {
     pub fn new() -> Self {
-        Scene3d {
+        Scene {
             objects: Vec::new(),
         }
     }
 
     pub fn add<T>(&mut self, obj: T)
     where
-        T: Hittable3d + 'static,
+        T: Hittable + 'static,
     {
         self.objects.push(Box::new(obj));
     }
 }
 
-impl Hittable3d for Scene3d {
-    fn hit(&self, ray: &Ray) -> Option<Hit3d> {
-        let mut hit: Option<Hit3d> = None;
+impl Hittable for Scene {
+    fn hit(&self, ray: &Ray) -> Option<Hit> {
+        let mut hit: Option<Hit> = None;
         for object in &self.objects {
             match object.hit(ray) {
                 Some(candidate) => {
@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn empty_scene() {
-        let scene = Scene3d::new();
+        let scene = Scene::new();
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
         let hit = scene.hit(&ray);
@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn hit_sphere() {
-        let mut scene = Scene3d::new();
+        let mut scene = Scene::new();
         scene.add(Sphere::new(Point3::new(0.0, 0.0, 10.0), 5.0));
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
 
@@ -74,7 +74,7 @@ mod tests {
 
         // pairs of (z, radius) for spheres. Same spheres, but in different insertion orders
         for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {
-            let mut scene = Scene3d::new();
+            let mut scene = Scene::new();
             for (z, radius) in spheres {
                 scene.add(Sphere::new(Point3::new(0.0, 0.0, z), radius));
             }

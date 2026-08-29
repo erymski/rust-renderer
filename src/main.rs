@@ -4,10 +4,10 @@ mod geometry;
 
 mod renderer;
 
-use geometry::{Scene3d, Sphere, Vec3};
+use geometry::{Scene, Sphere, Vec3};
 
-fn build_scene() -> Scene3d {
-    let mut scene = Scene3d::new();
+fn build_scene() -> Scene {
+    let mut scene = Scene::new();
     scene.add(Sphere::new(Vec3::new(0.2, 0.8, 0.0), 5.0));
 
     scene

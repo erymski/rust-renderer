@@ -1,5 +1,5 @@
 use crate::geometry::{
-    Color, Hittable3d, Point3, Ray, Scene3d,
+    Color, Hittable, Point3, Ray, Scene,
     colors::{BLUE, WHITE},
 };
 
@@ -7,11 +7,11 @@ use crate::geometry::{
 pub struct Renderer {
     pub width: usize,
     pub height: usize,
-    scene: Scene3d,
+    scene: Scene,
 }
 
 impl Renderer {
-    pub fn new(width: usize, height: usize, scene: Scene3d) -> Self {
+    pub fn new(width: usize, height: usize, scene: Scene) -> Self {
         Renderer {
             width,
             height,

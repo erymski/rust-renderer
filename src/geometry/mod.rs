@@ -1,20 +1,20 @@
 pub(crate) mod colors;
-pub(crate) mod hit3d;
+pub(crate) mod hit;
 pub(crate) mod ray;
-pub(crate) mod scene3d;
+pub(crate) mod scene;
 pub(crate) mod sphere;
 pub(crate) mod vec2;
 pub(crate) mod vec3;
 
-pub(crate) trait Hittable3d {
-    fn hit(&self, ray: &Ray) -> Option<Hit3d>;
+pub(crate) trait Hittable {
+    fn hit(&self, ray: &Ray) -> Option<Hit>;
 }
 
 #[cfg(test)]
 mod test_utils;
 
-pub use hit3d::Hit3d;
+pub use hit::Hit;
 pub use ray::Ray;
-pub(crate) use scene3d::Scene3d;
+pub use scene::Scene;
 pub use sphere::Sphere;
 pub use vec3::{Color, Point3, Vec3};
