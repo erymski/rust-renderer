@@ -13,6 +13,10 @@ impl Vec3 {
         Self { x, y, z }
     }
 
+    pub fn from_to(from: &Point3, to: &Point3) -> Self {
+        to.sub(&from)
+    }
+
     pub fn length(&self) -> f64 {
         self.dot(self).sqrt()
     }
@@ -47,6 +51,13 @@ mod tests {
     use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
 
     use super::*;
+
+    #[test]
+    fn vec3_from_to() {
+        let from = Vec3::new(-1.0, -2.0, 0.0);
+        let to = Point3::new(1.0, 3.0, 1.0);
+        assert_vec3_eq(&Vec3::from_to(&from, &to), &Vec3::new(2.0, 5., 1.));
+    }
 
     #[test]
     fn vec3_dist_to() {
