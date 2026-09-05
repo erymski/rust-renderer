@@ -21,11 +21,11 @@ fn build_scene() -> Scene {
 }
 
 fn build_directional_light() -> geometry::DirectionalLight {
-    DirectionalLight {
-        color: Color::new(255., 255., 255.),
-        intensity: 1.0,
-        direction: Vec3::new(-1.0, -1.0, -1.0).normalize(),
-    }
+    DirectionalLight::with_intensity(
+        &Color::new(255., 255., 255.),
+        Vec3::new(-1.0, 5.0, -1.0).normalize(),
+        1.0,
+    )
 }
 
 fn main() {
@@ -66,7 +66,7 @@ fn main() {
 
             // TODO: will not work with arbitrary camera orientation
             let pixel_in_world = Point3::new(offset_x_world, offset_y_world, 0.0).add(&vp_center);
-            let ray = Ray::from_points(camera.eye, pixel_in_world);
+            let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
             let color = renderer.calc_point(&ray);
             img.put_pixel(

@@ -50,7 +50,7 @@ mod tests {
     #[test]
     fn empty_scene() {
         let scene = Scene::new();
-        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
+        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), &Point3::new(0.0, 0.0, 1.0));
 
         let hit = scene.intersect(&ray);
         assert!(hit.is_none())
@@ -60,7 +60,7 @@ mod tests {
     fn hit_sphere() {
         let mut scene = Scene::new();
         scene.add(Sphere::blue(Point3::new(0.0, 0.0, 10.0), 5.0));
-        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
+        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), &Point3::new(0.0, 0.0, 1.0));
 
         let value = scene.intersect(&ray).expect("expected ray to hit sphere");
         assert_approx_eq(value.t, 5.0); // distance from the ray's start
@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn closest_sphere_independent_of_insertion_order() {
-        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 1.0));
+        let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), &Point3::new(0.0, 0.0, 1.0));
 
         // pairs of (z, radius) for spheres. Same spheres, but in different insertion orders
         for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {

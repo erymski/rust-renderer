@@ -11,7 +11,7 @@ impl Ray {
         Ray { from, dir }
     }
 
-    pub fn from_points(from: Point3, to: Point3) -> Self {
+    pub fn from_points(from: Point3, to: &Point3) -> Self {
         let delta = to.sub(&from);
         let dir = delta.normalize();
         Ray { from, dir }
@@ -27,7 +27,7 @@ mod tests {
     fn ray_from_two_points() {
         let from = Point3::new(0.0, 0.0, 0.0);
         let to = Point3::new(1.0, 1.0, 1.0);
-        let ray = Ray::from_points(from, to);
+        let ray = Ray::from_points(from, &to);
 
         assert_eq!(ray.from.x, 0.0);
         assert_eq!(ray.from.y, 0.0);

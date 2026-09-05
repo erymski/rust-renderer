@@ -1,5 +1,7 @@
 use crate::geometry::Color;
 
+// TODO: rework colors to be in 0..1
+// TODO: implement tone mapping. It should be abstract, and default implementation should be Reinhard one
 pub(crate) const WHITE: Color = Color {
     x: 255.,
     y: 255.,
