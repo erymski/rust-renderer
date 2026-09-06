@@ -38,6 +38,10 @@ impl Vec3 {
         Self::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 
+    pub fn mult(&self, other: &Vec3) -> Self {
+        Self::new(self.x * other.x, self.y * other.y, self.z * other.z)
+    }
+
     pub fn dist_to(&self, p: &Point3) -> f64 {
         self.sub(p).length()
     }
@@ -111,5 +115,12 @@ mod tests {
         let v2 = Vec3::new(0.0, 1.0, 0.0);
         let dot = v1.dot(&v2);
         assert_approx_eq(dot, 0.0);
+    }
+
+    #[test]
+    fn vec3_mult() {
+        let from = Vec3::new(-1.0, -2.0, 0.0);
+        let to = Point3::new(1.0, 3.0, 1.0);
+        assert_vec3_eq(&from.mult(&to), &Vec3::new(-1.0, -6., 0.));
     }
 }

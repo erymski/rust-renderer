@@ -1,7 +1,6 @@
-use crate::geometry::{
-    Color, DirectionalLight, Hittable, Ray, Scene,
-    colors::{BLACK, WHITE, lerp},
-};
+use std::ops::Neg;
+
+use crate::geometry::{Color, DirectionalLight, Hittable, Ray, Scene, colors::WHITE};
 
 pub struct Renderer {
     pub width: u32,
@@ -23,12 +22,8 @@ impl Renderer {
     pub fn calc_point(&self, ray: &Ray) -> Color {
         let hit = match self.scene.intersect(&ray) {
             Some(hit) => {
-                let dot = self.directional_light.direction.dot(&hit.normal);
-                if dot > 0.0 {
-                    return BLACK;
-                }
-
-                lerp(-dot, &BLACK, &hit.color)
+                let diffuse = self.directional_light.direction.dot(&hit.normal).neg();
+                self.directional_light.color.mult(&hit.color).scale(diffuse)
             }
             None => WHITE,
         };
