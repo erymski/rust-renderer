@@ -5,6 +5,7 @@ mod lights;
 mod ray;
 mod scene;
 mod sphere;
+mod tone_mapping;
 mod vec2;
 mod vec3;
 
@@ -25,4 +26,5 @@ pub use lights::{AmbientLight, DirectionalLight};
 pub use ray::Ray;
 pub use scene::Scene;
 pub use sphere::Sphere;
+pub use tone_mapping::{ToneMapper, color_identity};
 pub use vec3::{Color, Point3, Vec3};

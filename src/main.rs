@@ -4,9 +4,10 @@ mod geometry;
 
 mod renderer;
 
-use geometry::{Camera, Color, DirectionalLight, Scene, Sphere, Vec3};
-
-use crate::geometry::{Point3, Ray};
+use geometry::{
+    Camera, Color, DirectionalLight, Point3, Ray, Scene, Sphere, ToneMapper, Vec3, color_identity,
+    colors::WHITE,
+};
 
 fn build_scene() -> Scene {
     let mut scene = Scene::new();
@@ -14,21 +15,27 @@ fn build_scene() -> Scene {
     scene.add(Sphere::new(
         Vec3::new(0.5, -0.8, -7.0),
         4.0,
-        Color::new(255., 0., 0.),
+        Color::new(1., 0., 0.),
     ));
 
     scene
 }
 
 fn build_directional_light() -> geometry::DirectionalLight {
-    DirectionalLight::with_intensity(
-        &Color::new(255., 255., 255.),
-        Vec3::new(-1.0, 5.0, -1.0).normalize(),
-        1.0,
-    )
+    DirectionalLight::with_intensity(&WHITE, Vec3::new(-1.0, 5.0, -1.0).normalize(), 1.0)
+}
+
+fn to_rgb(color: &Color) -> Rgb<u8> {
+    Rgb([
+        (color.x * 255.) as u8,
+        (color.y * 255.) as u8,
+        (color.z * 255.) as u8,
+    ])
 }
 
 fn main() {
+    let tone_mapper: ToneMapper = color_identity;
+
     let width_px = 1024;
     let height_px = 768;
 
@@ -69,11 +76,8 @@ fn main() {
             let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
             let color = renderer.calc_point(&ray);
-            img.put_pixel(
-                x_px,
-                y_px,
-                Rgb([color.x as u8, color.y as u8, color.z as u8]),
-            );
+            let squeezed_color = tone_mapper(&color);
+            img.put_pixel(x_px, y_px, to_rgb(&squeezed_color));
         }
     }
 
