@@ -2,22 +2,30 @@ use crate::geometry::{DirectionalLight, Hit, Hittable, Ray};
 
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
-    pub directional_light: DirectionalLight,
+    directional_lights: Vec<DirectionalLight>,
 }
 
 impl Scene {
-    pub fn new(directional_light: DirectionalLight) -> Self {
+    pub fn new() -> Self {
         Scene {
             objects: Vec::new(),
-            directional_light,
+            directional_lights: Vec::new(),
         }
     }
 
-    pub fn add<T>(&mut self, obj: T)
+    pub fn add_object<T>(&mut self, obj: T)
     where
         T: Hittable + 'static,
     {
         self.objects.push(Box::new(obj));
+    }
+
+    pub fn add_light(&mut self, light: DirectionalLight) {
+        self.directional_lights.push(light);
+    }
+
+    pub fn lights(&self) -> &Vec<DirectionalLight> {
+        &self.directional_lights
     }
 }
 
@@ -47,7 +55,7 @@ mod tests {
         test_utils::{assert_approx_eq, assert_vec3_eq},
     };
 
-    fn default_light() -> DirectionalLight {
+    fn default_lights() -> DirectionalLight {
         DirectionalLight::with_intensity(
             &colors::WHITE,
             Vec3::new(-1.0, 5.0, -1.0).normalize(),
@@ -59,7 +67,7 @@ mod tests {
 
     #[test]
     fn empty_scene() {
-        let scene = Scene::new(default_light());
+        let scene = Scene::new();
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), &Point3::new(0.0, 0.0, 1.0));
 
         let hit = scene.intersect(&ray);
@@ -68,8 +76,8 @@ mod tests {
 
     #[test]
     fn hit_sphere() {
-        let mut scene = Scene::new(default_light());
-        scene.add(Sphere::blue(Point3::new(0.0, 0.0, 10.0), 5.0));
+        let mut scene = Scene::new();
+        scene.add_object(Sphere::blue(Point3::new(0.0, 0.0, 10.0), 5.0));
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), &Point3::new(0.0, 0.0, 1.0));
 
         let value = scene.intersect(&ray).expect("expected ray to hit sphere");
@@ -84,9 +92,9 @@ mod tests {
 
         // pairs of (z, radius) for spheres. Same spheres, but in different insertion orders
         for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {
-            let mut scene = Scene::new(default_light());
+            let mut scene = Scene::new();
             for (z, radius) in spheres {
-                scene.add(Sphere::blue(Point3::new(0.0, 0.0, z), radius));
+                scene.add_object(Sphere::blue(Point3::new(0.0, 0.0, z), radius));
             }
 
             let value = scene.intersect(&ray).expect("expected ray to hit sphere");

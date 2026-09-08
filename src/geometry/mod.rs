@@ -26,5 +26,5 @@ pub use lights::{AmbientLight, DirectionalLight};
 pub use ray::Ray;
 pub use scene::Scene;
 pub use sphere::Sphere;
-pub use tone_mapping::{ToneMapper, color_identity};
+pub use tone_mapping::{ToneMapper, color_clamp, color_identity, color_reinhard};
 pub use vec3::{Color, Point3, Vec3};

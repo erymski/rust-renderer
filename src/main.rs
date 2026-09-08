@@ -4,7 +4,7 @@ mod geometry;
 mod renderer;
 mod scene_loader;
 
-use geometry::{Camera, Color, Point3, Ray, ToneMapper, Vec3, color_identity};
+use geometry::{Camera, Color, Point3, Ray, ToneMapper, Vec3, color_clamp};
 
 use crate::scene_loader::build_scene;
 
@@ -17,7 +17,7 @@ fn to_rgb(color: &Color) -> Rgb<u8> {
 }
 
 fn main() {
-    let tone_mapper: ToneMapper = color_identity;
+    let tone_mapper: ToneMapper = color_clamp; //;color_reinhard; //color_identity;
 
     let width_px = 1024;
     let height_px = 768;

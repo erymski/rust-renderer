@@ -34,12 +34,26 @@ impl Vec3 {
         Self::new(self.x + other.x, self.y + other.y, self.z + other.z)
     }
 
+    pub const fn add_mut(&mut self, other: &Vec3) -> &mut Self {
+        self.x += other.x;
+        self.y += other.y;
+        self.z += other.z;
+        self
+    }
+
     pub const fn sub(&self, other: &Vec3) -> Self {
         Self::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 
     pub const fn mult(&self, other: &Vec3) -> Self {
         Self::new(self.x * other.x, self.y * other.y, self.z * other.z)
+    }
+
+    pub fn mult_mut(&mut self, other: &Vec3) -> &mut Self {
+        self.x *= other.x;
+        self.y *= other.y;
+        self.z *= other.z;
+        self
     }
 
     pub fn dist_to(&self, p: &Point3) -> f64 {

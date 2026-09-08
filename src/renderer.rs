@@ -1,6 +1,21 @@
 use std::ops::Neg;
 
-use crate::geometry::{Color, Hittable, Ray, Scene, colors};
+use crate::geometry::{Color, Hit, Hittable, Ray, Scene, colors};
+
+pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
+    let lights = scene.lights();
+    if lights.is_empty() {
+        return colors::BLACK;
+    }
+
+    let mut result = colors::BLACK;
+    for light in lights {
+        let diffuse = light.direction.dot(&hit.normal).neg();
+        let colored_hit = light.color.mult(&hit.color).scale(diffuse);
+        result.add_mut(&colored_hit);
+    }
+    result
+}
 
 pub struct Renderer {
     pub width: u32,
@@ -19,20 +34,7 @@ impl Renderer {
 
     pub fn calc_point(&self, ray: &Ray) -> Color {
         let hit = match self.scene.intersect(&ray) {
-            Some(hit) => {
-                let diffuse = self
-                    .scene
-                    .directional_light
-                    .direction
-                    .dot(&hit.normal)
-                    .neg();
-
-                self.scene
-                    .directional_light
-                    .color
-                    .mult(&hit.color)
-                    .scale(diffuse)
-            }
+            Some(hit) => hit_for_scene(&hit, &self.scene),
             None => colors::WHITE,
         };
         hit
