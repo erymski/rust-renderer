@@ -11,7 +11,10 @@ pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
     let mut result = colors::BLACK;
     for light in lights {
         let diffuse = light.direction.dot(&hit.normal).neg();
-        let colored_hit = light.color.mult(&hit.color).scale(diffuse);
+        let diffuse_light = light.color.scale(diffuse);
+
+        let colored_hit = hit.color.mult(&diffuse_light);
+
         result.add_mut(&colored_hit);
     }
     result

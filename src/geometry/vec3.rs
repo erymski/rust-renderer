@@ -45,11 +45,18 @@ impl Vec3 {
         Self::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 
+    pub const fn sub_mut(&mut self, other: &Vec3) -> &mut Self {
+        self.x -= other.x;
+        self.y -= other.y;
+        self.z -= other.z;
+        self
+    }
+
     pub const fn mult(&self, other: &Vec3) -> Self {
         Self::new(self.x * other.x, self.y * other.y, self.z * other.z)
     }
 
-    pub fn mult_mut(&mut self, other: &Vec3) -> &mut Self {
+    pub const fn mult_mut(&mut self, other: &Vec3) -> &mut Self {
         self.x *= other.x;
         self.y *= other.y;
         self.z *= other.z;
@@ -136,5 +143,29 @@ mod tests {
         let from = Vec3::new(-1.0, -2.0, 0.0);
         let to = Point3::new(1.0, 3.0, 1.0);
         assert_vec3_eq(&from.mult(&to), &Vec3::new(-1.0, -6., 0.));
+    }
+
+    #[test]
+    fn vec3_mult_mut() {
+        let mut from = Vec3::new(-1.0, -2.0, 0.0);
+        let to = Point3::new(1.0, 3.0, 1.0);
+        from.mult_mut(&to);
+        assert_vec3_eq(&from, &Vec3::new(-1.0, -6., 0.));
+    }
+
+    #[test]
+    fn vec3_add_mut() {
+        let mut from = Vec3::new(-1.0, -2.0, 0.0);
+        let to = Point3::new(1.0, 3.0, 1.0);
+        from.add_mut(&to);
+        assert_vec3_eq(&from, &Vec3::new(0.0, 1., 1.));
+    }
+
+    #[test]
+    fn vec3_sub_mut() {
+        let mut from = Vec3::new(-1.0, -2.0, 0.0);
+        let to = Point3::new(1.0, 3.0, 1.0);
+        from.sub_mut(&to);
+        assert_vec3_eq(&from, &Vec3::new(-2.0, -5., -1.));
     }
 }
