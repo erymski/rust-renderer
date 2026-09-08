@@ -14,7 +14,7 @@ impl Vec3 {
         Self { x, y, z }
     }
 
-    pub fn from_to(from: &Point3, to: &Point3) -> Self {
+    pub const fn from_to(from: &Point3, to: &Point3) -> Self {
         to.sub(&from)
     }
 
@@ -26,19 +26,19 @@ impl Vec3 {
         self.scale(1.0 / self.length())
     }
 
-    pub fn scale(&self, k: f64) -> Self {
+    pub const fn scale(&self, k: f64) -> Self {
         Self::new(k * self.x, k * self.y, k * self.z)
     }
 
-    pub fn add(&self, other: &Vec3) -> Self {
+    pub const fn add(&self, other: &Vec3) -> Self {
         Self::new(self.x + other.x, self.y + other.y, self.z + other.z)
     }
 
-    pub fn sub(&self, other: &Vec3) -> Self {
+    pub const fn sub(&self, other: &Vec3) -> Self {
         Self::new(self.x - other.x, self.y - other.y, self.z - other.z)
     }
 
-    pub fn mult(&self, other: &Vec3) -> Self {
+    pub const fn mult(&self, other: &Vec3) -> Self {
         Self::new(self.x * other.x, self.y * other.y, self.z * other.z)
     }
 
@@ -46,7 +46,7 @@ impl Vec3 {
         self.sub(p).length()
     }
 
-    pub fn dot(&self, other: &Vec3) -> f64 {
+    pub const fn dot(&self, other: &Vec3) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 }

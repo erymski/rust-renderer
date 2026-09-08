@@ -1,29 +1,12 @@
 use image::{Rgb, RgbImage};
 
 mod geometry;
-
 mod renderer;
+mod scene_loader;
 
-use geometry::{
-    Camera, Color, DirectionalLight, Point3, Ray, Scene, Sphere, ToneMapper, Vec3, color_identity,
-    colors::WHITE,
-};
+use geometry::{Camera, Color, Point3, Ray, ToneMapper, Vec3, color_identity};
 
-fn build_scene() -> Scene {
-    let mut scene = Scene::new();
-    scene.add(Sphere::blue(Vec3::new(-0.3, 0.2, -3.0), 1.5));
-    scene.add(Sphere::new(
-        Vec3::new(0.5, -0.8, -7.0),
-        4.0,
-        Color::new(1., 0., 0.),
-    ));
-
-    scene
-}
-
-fn build_directional_light() -> geometry::DirectionalLight {
-    DirectionalLight::with_intensity(&WHITE, Vec3::new(-1.0, 5.0, -1.0).normalize(), 1.0)
-}
+use crate::scene_loader::build_scene;
 
 fn to_rgb(color: &Color) -> Rgb<u8> {
     Rgb([
@@ -54,12 +37,7 @@ fn main() {
     let pixel_width = width_world / width_px as f64;
     let pixel_height = height_world / height_px as f64;
 
-    let renderer = renderer::Renderer::new(
-        width_px,
-        height_px,
-        build_scene(),
-        build_directional_light(),
-    );
+    let renderer = renderer::Renderer::new(width_px, height_px, build_scene());
 
     let vp_center = camera.eye.add(&camera.vp_dir);
 
