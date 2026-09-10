@@ -3,13 +3,12 @@ use std::ops::Neg;
 use crate::geometry::{Color, Hit, Hittable, Ray, Scene, colors};
 
 pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
-    let lights = scene.lights();
-    if lights.is_empty() {
-        return colors::BLACK;
-    }
+    let mut result = match &scene.ambient_light {
+        Some(light) => hit.color.mult(&light.color),
+        None => colors::BLACK,
+    };
 
-    let mut result = colors::BLACK;
-    for light in lights {
+    for light in scene.lights() {
         let diffuse = light.direction.dot(&hit.normal).neg();
         let diffuse_light = light.color.scale(diffuse);
 

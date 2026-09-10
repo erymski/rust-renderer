@@ -1,4 +1,4 @@
-use crate::geometry::{Color, DirectionalLight, Point3, Scene, Sphere, Vec3, colors};
+use crate::geometry::{AmbientLight, Color, DirectionalLight, Point3, Scene, Sphere, Vec3, colors};
 
 pub(crate) fn build_scene() -> Scene {
     let mut scene = Scene::new();
@@ -15,6 +15,8 @@ pub(crate) fn build_scene() -> Scene {
         Vec3::new(5.0, -2.0, -1.0).normalize(),
         1.0,
     ));
+
+    scene.ambient_light = Some(AmbientLight::with_intensity(&colors::WHITE, 0.3));
 
     // now scene objects
     scene.add_object(Sphere::blue(Point3::new(-0.3, 0.2, -3.0), 1.5));

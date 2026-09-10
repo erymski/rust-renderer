@@ -1,8 +1,9 @@
-use crate::geometry::{DirectionalLight, Hit, Hittable, Ray};
+use crate::geometry::{AmbientLight, DirectionalLight, Hit, Hittable, Ray};
 
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
     directional_lights: Vec<DirectionalLight>,
+    pub ambient_light: Option<AmbientLight>,
 }
 
 impl Scene {
@@ -10,6 +11,7 @@ impl Scene {
         Scene {
             objects: Vec::new(),
             directional_lights: Vec::new(),
+            ambient_light: None,
         }
     }
 
@@ -54,14 +56,6 @@ mod tests {
         Point3, Ray, Sphere, Vec3, colors,
         test_utils::{assert_approx_eq, assert_vec3_eq},
     };
-
-    fn default_lights() -> DirectionalLight {
-        DirectionalLight::with_intensity(
-            &colors::WHITE,
-            Vec3::new(-1.0, 5.0, -1.0).normalize(),
-            1.0,
-        )
-    }
 
     use super::*;
 
