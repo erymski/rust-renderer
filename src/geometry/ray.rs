@@ -7,14 +7,16 @@ pub struct Ray {
 }
 
 impl Ray {
-    pub const fn new(from: Point3, dir: Vec3) -> Self {
-        Ray { from, dir }
+    pub fn new(from: Point3, dir: Vec3) -> Self {
+        Ray {
+            from,
+            dir: dir.normalize(),
+        }
     }
 
     pub fn from_points(from: Point3, to: &Point3) -> Self {
         let delta = to.sub(&from);
-        let dir = delta.normalize();
-        Ray { from, dir }
+        Ray::new(from, delta)
     }
 }
 
