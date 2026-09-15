@@ -24,6 +24,7 @@ impl Ray {
 mod tests {
 
     use super::*;
+    use crate::geometry::test_utils::assert_approx_eq;
 
     #[test]
     fn ray_from_two_points() {
@@ -31,14 +32,14 @@ mod tests {
         let to = Point3::new(1.0, 1.0, 1.0);
         let ray = Ray::from_points(from, &to);
 
-        assert_eq!(ray.from.x, 0.0);
-        assert_eq!(ray.from.y, 0.0);
-        assert_eq!(ray.from.z, 0.0);
+        assert_approx_eq(ray.from.x, 0.0);
+        assert_approx_eq(ray.from.y, 0.0);
+        assert_approx_eq(ray.from.z, 0.0);
 
         let normalized: f64 = 1.0 / (3f64).sqrt();
 
-        assert_eq!(ray.dir.x, normalized);
-        assert_eq!(ray.dir.y, normalized);
-        assert_eq!(ray.dir.z, normalized);
+        assert_approx_eq(ray.dir.x, normalized);
+        assert_approx_eq(ray.dir.y, normalized);
+        assert_approx_eq(ray.dir.z, normalized);
     }
 }

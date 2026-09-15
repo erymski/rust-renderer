@@ -1,6 +1,4 @@
-use crate::geometry::{
-    Color, Hit, Hittable, Point3, Ray, Vec3, colors, tolerance::is_zero, vec3_eq,
-};
+use crate::geometry::{Color, Hit, Hittable, Point3, Ray, Vec3, tolerance::is_zero, vec3_eq};
 pub struct Plane {
     /// point of the plane
     pub point: Point3,
@@ -43,13 +41,15 @@ impl Hittable for Plane {
 
         let t = kn / dn;
         let intersection = ray.from.add(&ray.dir.scale(t));
-        return Some(Hit::new(intersection, self.normal, t, self.color));
+
+        Some(Hit::new(intersection, self.normal, t, self.color))
     }
 }
 
 #[cfg(test)]
 mod tests {
 
+    use crate::geometry::colors;
     use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
 
     use super::*;
@@ -83,7 +83,7 @@ mod tests {
         assert_vec3_eq(&intersection.point, &Point3::new(1.5, 0.75, 0.75));
         assert_vec3_eq(&intersection.normal, &plane.normal);
         assert_vec3_eq(&intersection.color, &colors::GREEN);
-        assert_approx_eq(intersection.t, 1.83711730708);
+        assert_approx_eq(intersection.t, 1.837_117_307_08);
     }
 
     // TODO: more tests for intersection, including None cases

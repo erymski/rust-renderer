@@ -19,7 +19,7 @@ impl Vec3 {
     }
 
     pub const fn from_to(from: &Point3, to: &Point3) -> Self {
-        to.sub(&from)
+        to.sub(from)
     }
 
     pub fn length(&self) -> f64 {

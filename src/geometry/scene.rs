@@ -35,14 +35,11 @@ impl Hittable for Scene {
     fn intersect(&self, ray: &Ray) -> Option<Hit> {
         let mut hit: Option<Hit> = None;
         for object in &self.objects {
-            match object.intersect(ray) {
-                Some(candidate) => {
-                    if hit.as_ref().is_none_or(|current| current.t > candidate.t) {
-                        hit = Some(candidate);
-                    }
+            if let Some(candidate) = object.intersect(ray) {
+                if hit.as_ref().is_none_or(|current| current.t > candidate.t) {
+                    hit = Some(candidate);
                 }
-                None => continue,
-            };
+            }
         }
 
         hit
@@ -53,7 +50,7 @@ impl Hittable for Scene {
 mod tests {
 
     use crate::geometry::{
-        Point3, Ray, Sphere, Vec3, colors,
+        Point3, Ray, Sphere,
         test_utils::{assert_approx_eq, assert_vec3_eq},
     };
 
@@ -65,7 +62,7 @@ mod tests {
         let ray = Ray::from_points(Point3::new(0.0, 0.0, 0.0), &Point3::new(0.0, 0.0, 1.0));
 
         let hit = scene.intersect(&ray);
-        assert!(hit.is_none())
+        assert!(hit.is_none());
     }
 
     #[test]

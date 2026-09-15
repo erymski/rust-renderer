@@ -5,15 +5,15 @@ pub type ToneMapper = fn(&Color) -> Color;
 /// just return the color itself
 #[allow(dead_code)]
 pub fn color_identity(color: &Color) -> Color {
-    color.clone()
+    *color
 }
 
 #[allow(dead_code)]
 pub fn color_clamp(color: &Color) -> Color {
     Color {
-        x: color.x.max(0.).min(1.0),
-        y: color.y.max(0.).min(1.0),
-        z: color.z.max(0.).min(1.0),
+        x: color.x.clamp(0., 1.0),
+        y: color.y.clamp(0., 1.0),
+        z: color.z.clamp(0., 1.0),
     }
 }
 

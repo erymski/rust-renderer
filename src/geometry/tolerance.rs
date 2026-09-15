@@ -16,12 +16,12 @@ pub const fn approx_eq_custom(a: f64, b: f64, epsilon: f64) -> bool {
 }
 
 pub fn vec3_eq(a: &Vec3, b: &Vec3) -> bool {
-    vec3_eq_custom(&a, &b, DEFAULT_EPSILON)
+    vec3_eq_custom(a, b, DEFAULT_EPSILON)
 }
 
 pub fn vec3_eq_custom(a: &Vec3, b: &Vec3, epsilon: f64) -> bool {
     let distance = a.dist_to(b); // TODO: no need sqrt, can be faster
-    return distance < epsilon;
+    distance < epsilon
 }
 
 #[cfg(test)]
