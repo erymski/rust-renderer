@@ -6,7 +6,10 @@ mod scene_loader;
 
 use geometry::{Camera, Color, Point3, Ray, ToneMapper, Vec3, color_clamp};
 
-use crate::scene_loader::build_scene;
+use crate::{
+    geometry::UNIT_Y,
+    scene_loader::{build_scene, build_scene2},
+};
 
 #[allow(clippy::cast_possible_truncation)]
 fn to_rgb(color: &Color) -> Rgb<u8> {
@@ -26,11 +29,8 @@ fn main() {
     let width_world: f64 = 4.0;
     let height_world: f64 = 3.0;
 
-    let camera = Camera {
-        eye: Point3::new(0.0, 0.0, 0.0),
-        up: Vec3::new(0.0, 1.0, 0.0),
-        vp_dir: Vec3::new(0.0, 0.0, -1.0),
-    };
+    let camera = make_camera2();
+    println!("camera: {camera:#?}");
 
     let half_width_px = f64::from(width_px) / 2.0;
     let half_height_px = f64::from(height_px) / 2.0;
@@ -38,7 +38,7 @@ fn main() {
     let pixel_width = width_world / f64::from(width_px);
     let pixel_height = height_world / f64::from(height_px);
 
-    let renderer = renderer::Renderer::new(width_px, height_px, build_scene());
+    let renderer = renderer::Renderer::new(width_px, height_px, build_scene2());
 
     let vp_center = camera.eye.add(&camera.vp_dir);
 
@@ -62,4 +62,26 @@ fn main() {
     }
 
     img.save("c:/delme/render3.png").unwrap();
+}
+
+fn make_camera() -> Camera {
+    let camera = Camera {
+        eye: Point3::new(0.0, 0.0, 0.0),
+        up: Vec3::new(0.0, 1.0, 0.0),
+        vp_dir: Vec3::new(0.0, 0.0, -1.0),
+    };
+    camera
+}
+
+fn make_camera2() -> Camera {
+    let from = Point3::new(0.0, 1.7, 5.5);
+    let look_at = Vec3::new(0.0, 0.9, 0.0);
+    let dir = look_at.sub(&from).normalize();
+
+    let camera = Camera {
+        eye: from,
+        up: UNIT_Y,
+        vp_dir: dir,
+    };
+    camera
 }

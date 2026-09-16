@@ -1,5 +1,6 @@
 use crate::geometry::{AmbientLight, DirectionalLight, Hit, Hittable, Ray};
 
+#[derive(Debug)]
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
     directional_lights: Vec<DirectionalLight>,

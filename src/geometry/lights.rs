@@ -1,6 +1,7 @@
 use crate::geometry::{Color, Vec3};
 
 /// it's like a sun
+#[derive(Debug, Clone, Copy)]
 pub struct DirectionalLight {
     pub color: Color,
     pub direction: Vec3,
@@ -15,6 +16,7 @@ impl DirectionalLight {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct AmbientLight {
     pub color: Color,
 }

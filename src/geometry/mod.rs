@@ -11,7 +11,9 @@ mod tone_mapping;
 mod vec2;
 mod vec3;
 
-pub(crate) trait Hittable {
+use std::fmt::Debug;
+
+pub(crate) trait Hittable: Debug {
     fn intersect(&self, ray: &Ray) -> Option<Hit>;
 }
 

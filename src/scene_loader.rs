@@ -38,3 +38,53 @@ pub(crate) fn build_scene() -> Scene {
 
     scene
 }
+
+pub(crate) fn build_scene2() -> Scene {
+    let mut scene = Scene::new();
+
+    // lights
+    scene.add_light(DirectionalLight::with_intensity(
+        &Color::new(1.0, 0.88, 0.72),
+        Vec3::new(0.55, -0.75, -0.35).normalize(),
+        1.4,
+    ));
+
+    scene.ambient_light = Some(AmbientLight::with_intensity(
+        &Color::new(0.12, 0.14, 0.18),
+        1., // TODO: adjust ambient light intensity
+    ));
+
+    // scene objects
+
+    // large red sphere
+    scene.add_object(Sphere::new(
+        Point3::new(-1.35, 1.0, 0.2),
+        1.0,
+        Color::new(0.75, 0.08, 0.06),
+    ));
+
+    // small green sphere
+    scene.add_object(Sphere::new(
+        Point3::new(2.2, 0.35, 1.3),
+        0.35,
+        Color::new(0.20, 0.65, 0.08),
+    ));
+
+    // gray sphere (metallic in future)
+    scene.add_object(Sphere::new(
+        Point3::new(1.25, 0.65, -0.1),
+        0.65,
+        Color::new(0.85, 0.88, 0.92),
+    ));
+
+    // add ground plane
+    scene.add_object(Plane::new(
+        Point3::new(0.0, 0.0, 0.0), // cutting the red sphere
+        &UNIT_Y,
+        Color::new(0.72, 0.72, 0.70),
+    ));
+
+    println!("scene: {scene:#?}");
+
+    scene
+}

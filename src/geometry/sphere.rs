@@ -1,5 +1,6 @@
 use crate::geometry::{Color, Hit, Hittable, Point3, Primitive, Ray, colors};
 
+#[derive(Debug, Clone, Copy)]
 pub struct Sphere {
     pub center: Point3,
     pub radius: f64,

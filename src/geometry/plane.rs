@@ -1,4 +1,6 @@
 use crate::geometry::{Color, Hit, Hittable, Point3, Ray, Vec3, tolerance::is_zero, vec3_eq};
+
+#[derive(Debug, Clone, Copy)]
 pub struct Plane {
     /// point of the plane
     pub point: Point3,
@@ -40,6 +42,10 @@ impl Hittable for Plane {
         }
 
         let t = kn / dn;
+        if t < 0.0 {
+            // wrong direction
+            return None; // TODO: think if it can be done faster
+        }
         let intersection = ray.from.add(&ray.dir.scale(t));
 
         Some(Hit::new(intersection, self.normal, t, self.color))

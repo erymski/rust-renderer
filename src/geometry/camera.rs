@@ -1,5 +1,6 @@
 use crate::geometry::{Point3, Vec3};
 
+#[derive(Debug, Clone, Copy)]
 pub struct Camera {
     pub eye: Point3,
     pub up: Vec3,
