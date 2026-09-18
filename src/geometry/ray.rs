@@ -1,5 +1,6 @@
 use crate::geometry::vec3::{Point3, Vec3};
 
+#[derive(Debug)]
 pub struct Ray {
     pub from: Point3,
     /// Normalized direction vector

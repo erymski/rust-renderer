@@ -21,6 +21,11 @@ pub(crate) trait Primitive: Hittable {
     fn color(&self) -> vec3::Color;
 }
 
+pub struct RenderingSet {
+    pub scene: Scene,
+    pub camera: Camera,
+}
+
 #[cfg(test)]
 mod test_utils;
 
@@ -31,6 +36,8 @@ pub use plane::Plane;
 pub use ray::Ray;
 pub use scene::Scene;
 pub use sphere::Sphere;
-pub use tolerance::{DEFAULT_EPSILON, approx_eq, approx_eq_custom, vec3_eq, vec3_eq_custom};
+pub use tolerance::{
+    DEFAULT_EPSILON, approx_eq, approx_eq_custom, is_zero, vec3_eq, vec3_eq_custom,
+};
 pub use tone_mapping::{ToneMapper, color_clamp, color_identity, color_reinhard};
 pub use vec3::{Color, Point3, UNIT_X, UNIT_Y, UNIT_Z, Vec3};

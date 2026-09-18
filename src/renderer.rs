@@ -1,4 +1,4 @@
-use crate::geometry::{Color, Hit, Hittable, Ray, Scene, colors};
+use crate::geometry::{Color, Hit, Hittable, Ray, Scene, colors, is_zero};
 
 pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
     let mut result = match &scene.ambient_light {
@@ -9,9 +9,12 @@ pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
     for light in scene.lights() {
         // check if the light is reachable
         let ray_to_light = Ray::new(hit.point, light.direction.scale(-1.));
-        if let None = scene.intersect(&ray_to_light) {
+        let intersect_to_light = scene.intersect(&ray_to_light);
+        if intersect_to_light.is_none_or(|hit| is_zero(hit.t)) {
+            // TODO: place to optimize - exclude itself from intersections
             // nothing between light and the object
-            let diffuse = -light.direction.dot(&hit.normal);
+            let dir = light.direction.scale(-1.);
+            let diffuse = dir.dot(&hit.normal).max(0.0);
             let diffuse_light = light.color.scale(diffuse);
 
             let colored_hit = hit.color.mult(&diffuse_light);

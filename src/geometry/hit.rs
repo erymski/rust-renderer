@@ -1,5 +1,6 @@
 use crate::geometry::{Color, Point3, Vec3};
 
+#[derive(Debug)]
 pub struct Hit {
     pub point: Point3,
     pub normal: Vec3,

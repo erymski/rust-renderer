@@ -1,6 +1,6 @@
 use crate::geometry::{
-    AmbientLight, Color, DirectionalLight, Plane, Point3, Scene, Sphere, UNIT_X, UNIT_Y, UNIT_Z,
-    Vec3, colors,
+    AmbientLight, Camera, Color, DirectionalLight, Plane, Point3, RenderingSet, Scene, Sphere,
+    UNIT_Y, UNIT_Z, Vec3, colors,
 };
 
 pub(crate) fn build_scene() -> Scene {
@@ -37,6 +37,22 @@ pub(crate) fn build_scene() -> Scene {
     ));
 
     scene
+}
+
+fn make_camera() -> Camera {
+    let camera = Camera {
+        eye: Point3::new(0.0, 0.0, 0.0),
+        up: Vec3::new(0.0, 1.0, 0.0),
+        vp_dir: Vec3::new(0.0, 0.0, -1.0),
+    };
+    camera
+}
+
+pub(crate) fn first_set() -> RenderingSet {
+    RenderingSet {
+        scene: build_scene(),
+        camera: make_camera(),
+    }
 }
 
 pub(crate) fn build_scene2() -> Scene {
@@ -87,4 +103,24 @@ pub(crate) fn build_scene2() -> Scene {
     println!("scene: {scene:#?}");
 
     scene
+}
+
+fn make_camera2() -> Camera {
+    let from = Point3::new(0.0, 1.7, 5.5);
+    let look_at = Vec3::new(0.0, 0.9, 0.0);
+    let dir = look_at.sub(&from).normalize();
+
+    let camera = Camera {
+        eye: from,
+        up: UNIT_Y,
+        vp_dir: dir,
+    };
+    camera
+}
+
+pub(crate) fn second_set() -> RenderingSet {
+    RenderingSet {
+        scene: build_scene2(),
+        camera: make_camera2(),
+    }
 }

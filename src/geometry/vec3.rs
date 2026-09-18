@@ -1,4 +1,5 @@
-#[derive(Debug, Clone, Copy)]
+use std::fmt;
+#[derive(Clone, Copy)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
@@ -73,6 +74,12 @@ impl Vec3 {
 
     pub const fn dot(&self, other: &Vec3) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
+    }
+}
+
+impl fmt::Debug for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "v({:.3}, {:.3}, {:.3})", self.x, self.y, self.z)
     }
 }
 
