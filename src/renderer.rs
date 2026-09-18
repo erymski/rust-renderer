@@ -10,8 +10,9 @@ pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
         // check if the light is reachable
         let ray_to_light = Ray::new(hit.point, light.direction.scale(-1.));
         let intersect_to_light = scene.intersect(&ray_to_light);
+
+        // TODO: defect - exclude itself from intersections, otherwise we can miss a real hit
         if intersect_to_light.is_none_or(|hit| is_zero(hit.t)) {
-            // TODO: place to optimize - exclude itself from intersections
             // nothing between light and the object
             let dir = light.direction.scale(-1.);
             let diffuse = dir.dot(&hit.normal).max(0.0);

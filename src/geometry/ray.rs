@@ -43,4 +43,10 @@ mod tests {
         assert_approx_eq(ray.dir.y, normalized);
         assert_approx_eq(ray.dir.z, normalized);
     }
+
+    #[test]
+    fn ray_should_be_normalized() {
+        let ray = Ray::new(Point3::new(1., 2., 3.), Vec3::new(5., 78., 32.));
+        assert_approx_eq(ray.dir.length(), 1.);
+    }
 }
