@@ -24,6 +24,7 @@ impl Renderer {
         }
     }
 
+    /// calculate direct lighting for the hit
     fn calc_lighting(&self, hit: &Hit) -> Color {
         let mut result = match &self.scene.ambient_light {
             Some(light) => hit.color.mult(&light.color),
@@ -71,7 +72,8 @@ impl Renderer {
             }
             bounces_color.div_mut(SAMPLES_COUNT as f64);
 
-            result.add_mut(&bounces_color.mult(&hit.color));
+            let mixed_color = bounces_color.mult(&hit.color);
+            result.add_mut(&mixed_color);
         }
 
         result

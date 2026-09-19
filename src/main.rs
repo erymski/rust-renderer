@@ -1,4 +1,5 @@
 use image::{Rgb, RgbImage};
+use std::time::Instant;
 
 mod geometry;
 mod renderer;
@@ -39,6 +40,10 @@ fn main() {
     let vp_center = camera.eye.add(&camera.vp_dir);
 
     let mut img = RgbImage::new(width_px, height_px);
+
+    println!("Start rendering");
+    let start = Instant::now();
+
     for x_px in 0..width_px {
         let offset_x_px = f64::from(x_px) - half_width_px;
         let offset_x_world = offset_x_px * pixel_width;
@@ -56,6 +61,8 @@ fn main() {
             img.put_pixel(x_px, y_px, to_rgb(&squeezed_color));
         }
     }
+
+    println!("Rendering took {:.3} sec", start.elapsed().as_secs_f64());
 
     img.save("c:/delme/render3.png").unwrap();
 }
