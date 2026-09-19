@@ -100,8 +100,6 @@ pub(crate) fn build_scene2() -> Scene {
         Color::new(0.72, 0.72, 0.70),
     ));
 
-    println!("scene: {scene:#?}");
-
     scene
 }
 

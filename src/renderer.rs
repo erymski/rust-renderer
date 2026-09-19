@@ -1,6 +1,8 @@
-use crate::geometry::{Color, DEFAULT_EPSILON, Hit, Hittable, Ray, Scene, colors, is_zero};
+use crate::geometry::{Color, DEFAULT_EPSILON, Hit, Hittable, Ray, Scene, Vec3, colors, is_zero};
 
-pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
+const SAMPLES_COUNT: u32 = 10;
+
+pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene, hops: u32) -> Color {
     let mut result = match &scene.ambient_light {
         Some(light) => hit.color.mult(&light.color),
         None => colors::BLACK,
@@ -25,6 +27,22 @@ pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
             result.add_mut(&colored_hit);
         }
     }
+
+    if hops != 0 {
+        let mut bounces_color = colors::BLACK;
+        for _ in 0..SAMPLES_COUNT {
+            let bounce_dir = hit.normal.add(&Vec3::random_unit()).normalize();
+            let bounced_ray = Ray::new(hit_pt, bounce_dir);
+
+            if let Some(bounced_hit) = scene.intersect(&bounced_ray) {
+                bounces_color.add_mut(&bounced_hit.color);
+            }
+        }
+        bounces_color.div_mut(SAMPLES_COUNT as f64);
+
+        result.add_mut(&bounces_color.mult(&hit.color));
+    }
+
     result
 }
 
@@ -45,7 +63,7 @@ impl Renderer {
 
     pub fn calc_point(&self, ray: &Ray) -> Color {
         match self.scene.intersect(ray) {
-            Some(hit) => hit_for_scene(&hit, &self.scene),
+            Some(hit) => hit_for_scene(&hit, &self.scene, 1),
             None => colors::WHITE,
         }
     }
