@@ -19,13 +19,18 @@ impl Renderer {
 
     pub fn calc_point(&self, ray: &Ray) -> Color {
         match self.scene.intersect(ray) {
-            Some(hit) => self.hit_for_scene(&hit, 1),
+            Some(hit) => {
+                let direct_lighting = self.calc_direct_lighting(&hit);
+                let indirect_lighting = self.calc_indirect_lighting(&hit, 1);
+
+                return direct_lighting.add(&indirect_lighting);
+            }
             None => colors::WHITE,
         }
     }
 
     /// calculate direct lighting for the hit
-    fn calc_lighting(&self, hit: &Hit) -> Color {
+    fn calc_direct_lighting(&self, hit: &Hit) -> Color {
         let mut result = match &self.scene.ambient_light {
             Some(light) => hit.color.mult(&light.color),
             None => colors::BLACK,
@@ -54,8 +59,8 @@ impl Renderer {
         result
     }
 
-    fn hit_for_scene(&self, hit: &Hit, hops: u32) -> Color {
-        let mut result = self.calc_lighting(hit);
+    fn calc_indirect_lighting(&self, hit: &Hit, hops: u32) -> Color {
+        let mut result = colors::BLACK;
 
         if hops != 0 {
             let mut bounces_color = colors::BLACK;
@@ -66,7 +71,7 @@ impl Renderer {
                 let bounced_ray = Ray::new(hit_pt, bounce_dir);
 
                 if let Some(bounced_hit) = self.scene.intersect(&bounced_ray) {
-                    let bounced_hit_color = self.calc_lighting(&bounced_hit);
+                    let bounced_hit_color = self.calc_direct_lighting(&bounced_hit);
                     bounces_color.add_mut(&bounced_hit_color);
                 }
             }
