@@ -13,6 +13,16 @@ pub fn assert_vec3_eq_custom(a: &Vec3, b: &Vec3, epsilon: f64) {
     );
 }
 
+pub fn assert_vec3_neq(a: &Vec3, b: &Vec3) {
+    assert_vec3_neq_custom(a, b, DEFAULT_EPSILON);
+}
+pub fn assert_vec3_neq_custom(a: &Vec3, b: &Vec3, epsilon: f64) {
+    assert!(
+        !vec3_eq_custom(a, b, epsilon),
+        "points are not equal: {a:?} vs {b:?}"
+    );
+}
+
 pub fn assert_vec2_eq(a: &Vec2, b: &Vec2) {
     assert_vec2_eq_custom(a, b, DEFAULT_EPSILON);
 }

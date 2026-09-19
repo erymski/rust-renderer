@@ -1,4 +1,8 @@
+use rand::random_range;
 use std::fmt;
+
+use crate::geometry::DEFAULT_EPSILON;
+
 #[derive(Clone, Copy)]
 pub struct Vec3 {
     pub x: f64,
@@ -24,7 +28,11 @@ impl Vec3 {
     }
 
     pub fn length(&self) -> f64 {
-        self.dot(self).sqrt()
+        self.length_squared().sqrt()
+    }
+
+    pub fn length_squared(&self) -> f64 {
+        self.dot(self)
     }
 
     pub fn normalize(&self) -> Self {
@@ -68,12 +76,40 @@ impl Vec3 {
         self
     }
 
+    pub const fn div(&self, d: f64) -> Self {
+        Self::new(self.x / d, self.y / d, self.z / d)
+    }
+
+    pub const fn div_mut(&mut self, d: f64) -> &mut Self {
+        self.x /= d;
+        self.y /= d;
+        self.z /= d;
+        self
+    }
+
     pub fn dist_to(&self, p: &Point3) -> f64 {
         self.sub(p).length()
     }
 
     pub const fn dot(&self, other: &Vec3) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
+    }
+
+    pub fn random_unit() -> Self {
+        loop {
+            let mut res = Vec3::new(
+                random_range(-1.0..1.0),
+                random_range(-1.0..1.0),
+                random_range(-1.0..1.0),
+            );
+
+            // generate vector until it's inside unit sphere
+            let len_squared = res.length_squared();
+            if len_squared > DEFAULT_EPSILON && len_squared <= 1.0 {
+                res.div_mut(len_squared.sqrt());
+                return res;
+            }
+        }
     }
 }
 
@@ -85,7 +121,7 @@ impl fmt::Debug for Vec3 {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
+    use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq, assert_vec3_neq};
 
     use super::*;
 
@@ -116,6 +152,8 @@ mod tests {
         let v = Vec3::new(1.0, 2.0, 2.0);
         let len = v.length();
         assert_approx_eq(len, 3.0);
+
+        assert_approx_eq(v.length_squared(), 9.0);
     }
 
     #[test]
@@ -178,5 +216,15 @@ mod tests {
         let to = Point3::new(1.0, 3.0, 1.0);
         from.sub_mut(&to);
         assert_vec3_eq(&from, &Vec3::new(-2.0, -5., -1.));
+    }
+
+    #[test]
+    fn vec3_random() {
+        let v1 = Vec3::random_unit();
+        assert_approx_eq(v1.length_squared(), 1.0);
+        let v2 = Vec3::random_unit();
+        assert_approx_eq(v2.length_squared(), 1.0);
+
+        assert_vec3_neq(&v1, &v2);
     }
 }
