@@ -1,4 +1,4 @@
-use crate::geometry::{Color, Hit, Hittable, Ray, Scene, colors, is_zero};
+use crate::geometry::{Color, DEFAULT_EPSILON, Hit, Hittable, Ray, Scene, colors, is_zero};
 
 pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
     let mut result = match &scene.ambient_light {
@@ -6,9 +6,11 @@ pub(crate) fn hit_for_scene(hit: &Hit, scene: &Scene) -> Color {
         None => colors::BLACK,
     };
 
+    let hit_pt = hit.point.add(&hit.normal.scale(DEFAULT_EPSILON));
+
     for light in scene.lights() {
         // check if the light is reachable
-        let ray_to_light = Ray::new(hit.point, light.direction.scale(-1.));
+        let ray_to_light = Ray::new(hit_pt, light.direction.scale(-1.));
         let intersect_to_light = scene.intersect(&ray_to_light);
 
         // TODO: defect - exclude itself from intersections, otherwise we can miss a real hit

@@ -36,7 +36,10 @@ impl Vec3 {
     }
 
     pub fn normalize(&self) -> Self {
-        self.scale(1.0 / self.length())
+        let length = self.length();
+        assert!(length > DEFAULT_EPSILON, "zero vector detected");
+
+        self.scale(1.0 / length)
     }
 
     pub const fn scale(&self, k: f64) -> Self {
@@ -226,5 +229,11 @@ mod tests {
         assert_approx_eq(v2.length_squared(), 1.0);
 
         assert_vec3_neq(&v1, &v2);
+    }
+
+    #[test]
+    #[should_panic]
+    fn panic_on_zero_vector() {
+        Vec3::new(0.0, 0.0, DEFAULT_EPSILON / 2.0).normalize();
     }
 }
