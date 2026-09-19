@@ -65,10 +65,11 @@ pub(crate) fn build_scene2() -> Scene {
         1.4,
     ));
 
-    scene.ambient_light = Some(AmbientLight::with_intensity(
-        &Color::new(0.12, 0.14, 0.18),
-        1., // TODO: adjust ambient light intensity
-    ));
+    //// now ambient light is not necessary, because we have bouncing lighting
+    // scene.ambient_light = Some(AmbientLight::with_intensity(
+    //     &Color::new(0.12, 0.14, 0.18),
+    //     1., // TODO: adjust ambient light intensity
+    // ));
 
     // scene objects
 
