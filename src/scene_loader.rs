@@ -107,7 +107,7 @@ pub(crate) fn build_scene2() -> Scene {
 fn make_camera2() -> Camera {
     let from = Point3::new(0.0, 1.7, 5.5);
     let look_at = Vec3::new(0.0, 0.9, 0.0);
-    let dir = look_at.sub(&from).normalize();
+    let dir = (look_at - from).normalize();
 
     let camera = Camera {
         eye: from,

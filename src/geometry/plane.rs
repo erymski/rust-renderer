@@ -34,7 +34,7 @@ impl Hittable for Plane {
             return None; // TODO: right?
         }
 
-        let k = self.point.sub(&ray.from);
+        let k = self.point - ray.from;
         let kn = k.dot(&self.normal);
         if is_zero(kn) {
             // ray is parallel to the plane

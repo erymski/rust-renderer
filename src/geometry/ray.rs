@@ -16,8 +16,7 @@ impl Ray {
     }
 
     pub fn from_points(from: Point3, to: &Point3) -> Self {
-        let delta = to.sub(&from);
-        Ray::new(from, delta)
+        Ray::new(from, *to - from)
     }
 }
 

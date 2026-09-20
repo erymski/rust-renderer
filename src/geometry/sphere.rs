@@ -28,7 +28,7 @@ impl Sphere {
 
 impl Hittable for Sphere {
     fn intersect(&self, ray: &Ray) -> Option<Hit> {
-        let oc = ray.from.sub(&self.center);
+        let oc = ray.from - self.center;
         let oc_len = oc.length();
 
         let b = -2.0 * oc.dot(&ray.dir); // negate immediately, minor optimization to avoid negating later
@@ -55,7 +55,7 @@ impl Hittable for Sphere {
             t *= 0.5;
 
             let point = ray.from + ray.dir.scale(t);
-            let normal = point.sub(&self.center).normalize();
+            let normal = (point - self.center).normalize();
             Some(Hit::new(point, normal, t, self.color))
         }
     }
