@@ -10,6 +10,7 @@ mod tolerance;
 mod tone_mapping;
 mod vec2;
 mod vec3;
+mod vec3_ops;
 
 use std::fmt::Debug;
 

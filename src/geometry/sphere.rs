@@ -54,7 +54,7 @@ impl Hittable for Sphere {
 
             t *= 0.5;
 
-            let point = ray.from.add(&ray.dir.scale(t));
+            let point = ray.from + ray.dir.scale(t);
             let normal = point.sub(&self.center).normalize();
             Some(Hit::new(point, normal, t, self.color))
         }

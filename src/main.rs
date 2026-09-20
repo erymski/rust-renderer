@@ -37,7 +37,7 @@ fn main() {
 
     let renderer = renderer::Renderer::new(width_px, height_px, scene);
 
-    let vp_center = camera.eye.add(&camera.vp_dir);
+    let vp_center = camera.eye + camera.vp_dir;
 
     let mut img = RgbImage::new(width_px, height_px);
 
@@ -52,7 +52,7 @@ fn main() {
             let offset_y_world = offset_y_px * pixel_height;
 
             // TODO: will not work with arbitrary camera orientation
-            let pixel_in_world = Point3::new(offset_x_world, offset_y_world, 0.0).add(&vp_center);
+            let pixel_in_world = Point3::new(offset_x_world, offset_y_world, 0.0) + vp_center;
             let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
             let color = renderer.calc_point(&ray);

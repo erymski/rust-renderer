@@ -24,7 +24,7 @@ impl Renderer {
                 let direct_lighting = self.calc_direct_lighting(&hit);
                 let indirect_lighting = self.calc_indirect_lighting(&hit, BOUNCE_COUNT);
 
-                return direct_lighting.add(&indirect_lighting);
+                return direct_lighting + indirect_lighting;
             }
             None => colors::WHITE,
         }
@@ -37,7 +37,7 @@ impl Renderer {
             None => colors::BLACK,
         };
 
-        let hit_pt = hit.point.add(&hit.normal.scale(DEFAULT_EPSILON));
+        let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
 
         for light in self.scene.lights() {
             // check if the light is reachable
@@ -53,7 +53,7 @@ impl Renderer {
 
                 let colored_hit = hit.color.mult(&diffuse_light);
 
-                result.add_mut(&colored_hit);
+                result += colored_hit;
             }
         }
 
@@ -62,19 +62,19 @@ impl Renderer {
 
     fn calc_indirect_lighting(&self, hit: &Hit, hops: u32) -> Color {
         let mut bounces_color = colors::BLACK;
-        let hit_pt = hit.point.add(&hit.normal.scale(DEFAULT_EPSILON));
+        let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
 
         for _ in 0..SAMPLES_COUNT {
-            let bounce_dir = hit.normal.add(&Vec3::random_unit()).normalize();
+            let bounce_dir = (hit.normal + Vec3::random_unit()).normalize();
             let bounced_ray = Ray::new(hit_pt, bounce_dir);
 
             if let Some(bounced_hit) = self.scene.intersect(&bounced_ray) {
                 let bounced_direct = self.calc_direct_lighting(&bounced_hit);
-                bounces_color.add_mut(&bounced_direct);
+                bounces_color += bounced_direct;
 
                 if hops > 0 {
                     let bounced_indirect = self.calc_indirect_lighting(&bounced_hit, hops - 1);
-                    bounces_color.add_mut(&bounced_indirect.mult(&bounced_hit.color));
+                    bounces_color += bounced_indirect.mult(&bounced_hit.color);
                 }
             }
         }

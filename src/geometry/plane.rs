@@ -46,7 +46,7 @@ impl Hittable for Plane {
             // wrong direction
             return None; // TODO: think if it can be done faster
         }
-        let intersection = ray.from.add(&ray.dir.scale(t));
+        let intersection = ray.from + ray.dir.scale(t);
 
         Some(Hit::new(intersection, self.normal, t, self.color))
     }

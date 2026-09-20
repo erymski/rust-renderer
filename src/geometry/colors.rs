@@ -26,5 +26,5 @@ pub(crate) const GREEN: Color = Color {
 
 /// Linearly interpolates from `a` to `b` by `ratio`.
 pub(crate) fn lerp(ratio: f64, a: &Color, b: &Color) -> Color {
-    a.scale(1.0 - ratio).add(&b.scale(ratio))
+    a.scale(1.0 - ratio) + b.scale(ratio)
 }
