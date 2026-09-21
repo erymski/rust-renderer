@@ -5,7 +5,7 @@ mod geometry;
 mod renderer;
 mod scene_loader;
 
-use geometry::{Color, Point3, Ray, RenderingSet, ToneMapper, color_clamp};
+use geometry::{Color, P, Ray, RenderingSet, ToneMapper, color_clamp};
 
 use crate::scene_loader::second_set;
 
@@ -52,7 +52,7 @@ fn main() {
             let offset_y_world = offset_y_px * pixel_height;
 
             // TODO: will not work with arbitrary camera orientation
-            let pixel_in_world = Point3::new(offset_x_world, offset_y_world, 0.0) + vp_center;
+            let pixel_in_world = P(offset_x_world, offset_y_world, 0.0) + vp_center;
             let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
             let color = renderer.calc_point(&ray);

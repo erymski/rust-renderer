@@ -41,4 +41,4 @@ pub use tolerance::{
     DEFAULT_EPSILON, approx_eq, approx_eq_custom, is_zero, vec3_eq, vec3_eq_custom,
 };
 pub use tone_mapping::{ToneMapper, color_clamp, color_identity, color_reinhard};
-pub use vec3::{Color, Point3, UNIT_X, UNIT_Y, UNIT_Z, Vec3};
+pub use vec3::{C, Color, P, Point3, UNIT_X, UNIT_Y, UNIT_Z, V, Vec3};

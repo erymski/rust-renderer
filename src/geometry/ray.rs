@@ -25,11 +25,12 @@ mod tests {
 
     use super::*;
     use crate::geometry::test_utils::assert_approx_eq;
+    use crate::geometry::vec3::{P, V};
 
     #[test]
     fn ray_from_two_points() {
-        let from = Point3::new(0.0, 0.0, 0.0);
-        let to = Point3::new(1.0, 1.0, 1.0);
+        let from = P(0.0, 0.0, 0.0);
+        let to = P(1.0, 1.0, 1.0);
         let ray = Ray::from_points(from, &to);
 
         assert_approx_eq(ray.from.x, 0.0);
@@ -45,7 +46,7 @@ mod tests {
 
     #[test]
     fn ray_should_be_normalized() {
-        let ray = Ray::new(Point3::new(1., 2., 3.), Vec3::new(5., 78., 32.));
+        let ray = Ray::new(P(1., 2., 3.), V(5., 78., 32.));
         assert_approx_eq(ray.dir.length(), 1.);
     }
 }

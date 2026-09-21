@@ -27,6 +27,7 @@ pub fn vec3_eq_custom(a: &Vec3, b: &Vec3, epsilon: f64) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::geometry::V;
 
     #[test]
     fn eq_same_vectors() {
@@ -40,8 +41,8 @@ mod tests {
 
     #[test]
     fn neq_vectors() {
-        let v1 = Vec3::new(1., 2., 3.);
-        let v2 = Vec3::new(4., 2., 3.);
+        let v1 = V(1., 2., 3.);
+        let v2 = V(4., 2., 3.);
         assert!(!vec3_eq(&v1, &v2));
     }
 

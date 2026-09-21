@@ -46,7 +46,7 @@ impl Hittable for Plane {
             // wrong direction
             return None; // TODO: think if it can be done faster
         }
-        let intersection = ray.from + ray.dir.scale(t);
+        let intersection = ray.from + (ray.dir * t);
 
         Some(Hit::new(intersection, self.normal, t, self.color))
     }
@@ -55,22 +55,18 @@ impl Hittable for Plane {
 #[cfg(test)]
 mod tests {
 
-    use crate::geometry::colors;
     use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
+    use crate::geometry::{P, V, colors};
 
     use super::*;
 
     #[test]
     fn plane_intersection_simple_orientation() {
-        let plane = Plane::new(
-            Point3::new(0., 0., 0.),
-            &Vec3::new(1., 0., 0.),
-            colors::BLUE,
-        );
+        let plane = Plane::new(P(0., 0., 0.), &V(1., 0., 0.), colors::BLUE);
 
-        let ray = Ray::from_points(Point3::new(10., 2., 6.), &Point3::new(-3., 2., 6.));
+        let ray = Ray::from_points(P(10., 2., 6.), &P(-3., 2., 6.));
         let intersection = plane.intersect(&ray).unwrap();
-        assert_vec3_eq(&intersection.point, &Point3::new(0., 2., 6.));
+        assert_vec3_eq(&intersection.point, &P(0., 2., 6.));
         assert_vec3_eq(&intersection.normal, &plane.normal);
         assert_vec3_eq(&intersection.color, &colors::BLUE);
         assert_approx_eq(intersection.t, 10.);
@@ -78,15 +74,11 @@ mod tests {
 
     #[test]
     fn plane_intersection_complex_orientation() {
-        let plane = Plane::new(
-            Point3::new(1., 2., 3.),
-            &Vec3::new(2., -1., 1.),
-            colors::GREEN,
-        );
+        let plane = Plane::new(P(1., 2., 3.), &V(2., -1., 1.), colors::GREEN);
 
-        let ray = Ray::from_points(Point3::new(0., 0., 0.), &Point3::new(2., 1., 1.));
+        let ray = Ray::from_points(P(0., 0., 0.), &P(2., 1., 1.));
         let intersection = plane.intersect(&ray).unwrap();
-        assert_vec3_eq(&intersection.point, &Point3::new(1.5, 0.75, 0.75));
+        assert_vec3_eq(&intersection.point, &P(1.5, 0.75, 0.75));
         assert_vec3_eq(&intersection.normal, &plane.normal);
         assert_vec3_eq(&intersection.color, &colors::GREEN);
         assert_approx_eq(intersection.t, 1.837_117_307_08);

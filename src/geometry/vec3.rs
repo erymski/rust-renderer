@@ -39,11 +39,18 @@ impl Vec3 {
         let length = self.length();
         assert!(length > DEFAULT_EPSILON, "zero vector detected");
 
-        self.scale(1.0 / length)
+        self.div(length)
     }
 
     pub const fn scale(&self, k: f64) -> Self {
         Self::new(k * self.x, k * self.y, k * self.z)
+    }
+
+    pub const fn scale_mut(&mut self, k: f64) -> &mut Self {
+        self.x *= k;
+        self.y *= k;
+        self.z *= k;
+        self
     }
 
     pub const fn add(&self, other: &Vec3) -> Self {
@@ -100,7 +107,7 @@ impl Vec3 {
 
     pub fn random_unit() -> Self {
         loop {
-            let mut res = Vec3::new(
+            let mut res = V(
                 random_range(-1.0..1.0),
                 random_range(-1.0..1.0),
                 random_range(-1.0..1.0),
@@ -122,6 +129,17 @@ impl fmt::Debug for Vec3 {
     }
 }
 
+// --- aliases
+
+/// create Vec3
+pub const V: fn(x: f64, y: f64, z: f64) -> Vec3 = Vec3::new;
+
+/// create Point3
+pub const P: fn(x: f64, y: f64, z: f64) -> Point3 = Vec3::new;
+
+/// create Color
+pub const C: fn(x: f64, y: f64, z: f64) -> Color = Vec3::new;
+
 #[cfg(test)]
 mod tests {
     use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq, assert_vec3_neq};
@@ -130,29 +148,35 @@ mod tests {
 
     #[test]
     fn vec3_from_to() {
-        let from = Vec3::new(-1.0, -2.0, 0.0);
-        let to = Point3::new(1.0, 3.0, 1.0);
-        assert_vec3_eq(&Vec3::from_to(&from, &to), &Vec3::new(2.0, 5., 1.));
+        let from = V(-1.0, -2.0, 0.0);
+        let to = P(1.0, 3.0, 1.0);
+        assert_vec3_eq(&Vec3::from_to(&from, &to), &V(2.0, 5., 1.));
     }
 
     #[test]
     fn vec3_dist_to() {
-        let v = Vec3::new(0.0, 0.0, 0.0);
-        let p = Point3::new(1.0, 1.0, 1.0);
+        let v = V(0.0, 0.0, 0.0);
+        let p = P(1.0, 1.0, 1.0);
         let dist = v.dist_to(&p);
         assert_approx_eq(dist, (3f64).sqrt());
     }
 
     #[test]
     fn vec3_scale() {
-        let v = Vec3::new(1.0, 2.0, 3.0);
+        let v = V(1.0, 2.0, 3.0);
         let scaled = v.scale(2.0);
-        assert_vec3_eq(&scaled, &Vec3::new(2.0, 4., 6.));
+        assert_vec3_eq(&scaled, &V(2.0, 4., 6.));
+    }
+
+    #[test]
+    fn vec3_scale_mut() {
+        let mut v = V(1.0, 0.0, -3.0);
+        assert_vec3_eq(&*v.scale_mut(3.0), &V(3.0, 0.0, -9.0));
     }
 
     #[test]
     fn vec3_length() {
-        let v = Vec3::new(1.0, 2.0, 2.0);
+        let v = V(1.0, 2.0, 2.0);
         let len = v.length();
         assert_approx_eq(len, 3.0);
 
@@ -161,64 +185,64 @@ mod tests {
 
     #[test]
     fn vec3_normalize() {
-        let v = Vec3::new(1.0, 2.0, 2.0);
+        let v = V(1.0, 2.0, 2.0);
         let normalized = v.normalize();
         assert_approx_eq(normalized.length(), 1.0);
     }
 
     #[test]
     fn vec3_dot() {
-        let v1 = Vec3::new(1.0, 2.0, 3.0);
-        let v2 = Vec3::new(4.0, -5.0, 6.0);
+        let v1 = V(1.0, 2.0, 3.0);
+        let v2 = V(4.0, -5.0, 6.0);
         let dot = v1.dot(&v2);
         assert_approx_eq(dot, 12.0);
     }
 
     #[test]
     fn vec3_dot_opposite() {
-        let v1 = Vec3::new(1.0, 2.0, 3.0).normalize();
-        let v2 = Vec3::new(-1.0, -2.0, -3.0).normalize();
+        let v1 = V(1.0, 2.0, 3.0).normalize();
+        let v2 = V(-1.0, -2.0, -3.0).normalize();
         let dot = v1.dot(&v2);
         assert_approx_eq(dot, -1.0);
     }
 
     #[test]
     fn vec3_dot_perpendicular() {
-        let v1 = Vec3::new(1.0, 0.0, 0.0);
-        let v2 = Vec3::new(0.0, 1.0, 0.0);
+        let v1 = V(1.0, 0.0, 0.0);
+        let v2 = V(0.0, 1.0, 0.0);
         let dot = v1.dot(&v2);
         assert_approx_eq(dot, 0.0);
     }
 
     #[test]
     fn vec3_mult() {
-        let from = Vec3::new(-1.0, -2.0, 0.0);
-        let to = Point3::new(1.0, 3.0, 1.0);
-        assert_vec3_eq(&from.mult(&to), &Vec3::new(-1.0, -6., 0.));
+        let from = V(-1.0, -2.0, 0.0);
+        let to = P(1.0, 3.0, 1.0);
+        assert_vec3_eq(&from.mult(&to), &V(-1.0, -6., 0.));
     }
 
     #[test]
     fn vec3_mult_mut() {
-        let mut from = Vec3::new(-1.0, -2.0, 0.0);
-        let to = Point3::new(1.0, 3.0, 1.0);
+        let mut from = V(-1.0, -2.0, 0.0);
+        let to = P(1.0, 3.0, 1.0);
         from.mult_mut(&to);
-        assert_vec3_eq(&from, &Vec3::new(-1.0, -6., 0.));
+        assert_vec3_eq(&from, &V(-1.0, -6., 0.));
     }
 
     #[test]
     fn vec3_add_mut() {
-        let mut from = Vec3::new(-1.0, -2.0, 0.0);
-        let to = Point3::new(1.0, 3.0, 1.0);
+        let mut from = V(-1.0, -2.0, 0.0);
+        let to = P(1.0, 3.0, 1.0);
         from.add_mut(&to);
-        assert_vec3_eq(&from, &Vec3::new(0.0, 1., 1.));
+        assert_vec3_eq(&from, &V(0.0, 1., 1.));
     }
 
     #[test]
     fn vec3_sub_mut() {
-        let mut from = Vec3::new(-1.0, -2.0, 0.0);
-        let to = Point3::new(1.0, 3.0, 1.0);
+        let mut from = V(-1.0, -2.0, 0.0);
+        let to = P(1.0, 3.0, 1.0);
         from.sub_mut(&to);
-        assert_vec3_eq(&from, &Vec3::new(-2.0, -5., -1.));
+        assert_vec3_eq(&from, &V(-2.0, -5., -1.));
     }
 
     #[test]
@@ -233,19 +257,19 @@ mod tests {
 
     #[test]
     fn vec3_div() {
-        let from = Vec3::new(-1.0, 2.0, 0.0);
-        assert_vec3_eq(&from.div(2.0), &Vec3::new(-0.5, 1.0, 0.0));
+        let from = V(-1.0, 2.0, 0.0);
+        assert_vec3_eq(&from.div(2.0), &V(-0.5, 1.0, 0.0));
     }
 
     #[test]
     fn vec3_div_mut() {
-        let mut from = Vec3::new(4.0, 0.0, -3.0);
-        assert_vec3_eq(&from.div_mut(2.0), &Vec3::new(2.0, 0.0, -1.5));
+        let mut from = V(4.0, 0.0, -3.0);
+        assert_vec3_eq(&from.div_mut(2.0), &V(2.0, 0.0, -1.5));
     }
 
     #[test]
     #[should_panic]
     fn panic_on_zero_vector() {
-        Vec3::new(0.0, 0.0, DEFAULT_EPSILON / 2.0).normalize();
+        V(0.0, 0.0, DEFAULT_EPSILON / 2.0).normalize();
     }
 }

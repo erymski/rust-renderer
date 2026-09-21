@@ -43,6 +43,20 @@ impl MulAssign for Vec3 {
     }
 }
 
+impl Mul<f64> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Vec3::scale(&self, rhs)
+    }
+}
+
+impl MulAssign<f64> for Vec3 {
+    fn mul_assign(&mut self, rhs: f64) {
+        Vec3::scale_mut(self, rhs);
+    }
+}
+
 impl Div<f64> for Vec3 {
     type Output = Vec3;
 

@@ -33,14 +33,15 @@ pub fn color_reinhard(color: &Color) -> Color {
 
 #[cfg(test)]
 mod tests {
+    use crate::geometry::C;
     use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
 
     use super::*;
 
     #[test]
     fn clamp_check() {
-        let color = Color::new(-5., 12., 0.);
-        assert_vec3_eq(&color_clamp(&color), &Color::new(0., 1., 0.));
+        let color = C(-5., 12., 0.);
+        assert_vec3_eq(&color_clamp(&color), &C(0., 1., 0.));
     }
 
     #[test]
@@ -51,7 +52,7 @@ mod tests {
     }
 
     fn reinhard_color_check() {
-        let color = Color::new(1., 12., 0.);
-        assert_vec3_eq(&color_clamp(&color), &Color::new(0.5, 12. / 13., 0.));
+        let color = C(1., 12., 0.);
+        assert_vec3_eq(&color_clamp(&color), &C(0.5, 12. / 13., 0.));
     }
 }

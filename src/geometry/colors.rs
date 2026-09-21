@@ -28,3 +28,30 @@ pub(crate) const GREEN: Color = Color {
 pub(crate) fn lerp(ratio: f64, a: &Color, b: &Color) -> Color {
     a.scale(1.0 - ratio) + b.scale(ratio)
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::geometry::C;
+    use crate::geometry::test_utils::assert_vec3_eq;
+
+    use super::*;
+
+    #[test]
+    fn lerp_left() {
+        let res = lerp(0.0, &GREEN, &WHITE);
+        assert_vec3_eq(&res, &GREEN);
+    }
+
+    #[test]
+    fn lerp_right() {
+        let res = lerp(1.0, &GREEN, &WHITE);
+        assert_vec3_eq(&res, &WHITE);
+    }
+
+    #[test]
+    fn lerp_real() {
+        let res = lerp(0.4, &GREEN, &WHITE);
+        assert_vec3_eq(&res, &C(0.4, 1.0, 0.4));
+    }
+}

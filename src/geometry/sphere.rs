@@ -54,7 +54,7 @@ impl Hittable for Sphere {
 
             t *= 0.5;
 
-            let point = ray.from + ray.dir.scale(t);
+            let point = ray.from + (ray.dir * t);
             let normal = (point - self.center).normalize();
             Some(Hit::new(point, normal, t, self.color))
         }
@@ -69,8 +69,8 @@ impl Primitive for Sphere {
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::Vec3;
     use crate::geometry::test_utils::assert_vec3_eq;
+    use crate::geometry::{P, V};
 
     use super::*;
 
@@ -81,24 +81,24 @@ mod tests {
     #[test]
     fn sphere_hit() {
         let rays = [
-            Ray::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 1.0)),
-            Ray::new(Vec3::new(0.0, 0.0, 9.0), Vec3::new(0.0, 0.0, 1.0)),
-            Ray::new(Vec3::new(0.0, 0.0, 11.0), Vec3::new(0.0, 0.0, -1.0)),
+            Ray::new(V(0.0, 0.0, 0.0), V(0.0, 0.0, 1.0)),
+            Ray::new(V(0.0, 0.0, 9.0), V(0.0, 0.0, 1.0)),
+            Ray::new(V(0.0, 0.0, 11.0), V(0.0, 0.0, -1.0)),
         ];
 
         for ray in rays {
             let hit = SPHERE.intersect(&ray);
             assert!(hit.is_some());
-            assert_vec3_eq(&hit.unwrap().point, &Vec3::new(0.0, 0.0, 10.0));
+            assert_vec3_eq(&hit.unwrap().point, &V(0.0, 0.0, 10.0));
         }
     }
 
     #[test]
     fn sphere_miss() {
         let rays = [
-            Ray::new(Point3::new(0.0, 0.0, -15.0), Vec3::new(0.0, 0.0, -1.0)),
-            Ray::new(Point3::new(0.0, 0.0, -15.0), Vec3::new(0.0, 1.0, 0.0)),
-            Ray::new(Point3::new(0.0, 0.0, 15.0), Vec3::new(0.0, 0.0, 1.0)),
+            Ray::new(P(0.0, 0.0, -15.0), V(0.0, 0.0, -1.0)),
+            Ray::new(P(0.0, 0.0, -15.0), V(0.0, 1.0, 0.0)),
+            Ray::new(P(0.0, 0.0, 15.0), V(0.0, 0.0, 1.0)),
         ];
         for ray in rays {
             let hit = SPHERE.intersect(&ray);
