@@ -232,6 +232,18 @@ mod tests {
     }
 
     #[test]
+    fn vec3_div() {
+        let from = Vec3::new(-1.0, 2.0, 0.0);
+        assert_vec3_eq(&from.div(2.0), &Vec3::new(-0.5, 1.0, 0.0));
+    }
+
+    #[test]
+    fn vec3_div_mut() {
+        let mut from = Vec3::new(4.0, 0.0, -3.0);
+        assert_vec3_eq(&from.div_mut(2.0), &Vec3::new(2.0, 0.0, -1.5));
+    }
+
+    #[test]
     #[should_panic]
     fn panic_on_zero_vector() {
         Vec3::new(0.0, 0.0, DEFAULT_EPSILON / 2.0).normalize();

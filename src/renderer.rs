@@ -33,7 +33,7 @@ impl Renderer {
     /// calculate direct lighting for the hit
     fn calc_direct_lighting(&self, hit: &Hit) -> Color {
         let mut result = match &self.scene.ambient_light {
-            Some(light) => hit.color.mult(&light.color),
+            Some(light) => hit.color * light.color,
             None => colors::BLACK,
         };
 
@@ -51,7 +51,7 @@ impl Renderer {
                 let diffuse = dir.dot(&hit.normal).max(0.0);
                 let diffuse_light = light.color.scale(diffuse);
 
-                let colored_hit = hit.color.mult(&diffuse_light);
+                let colored_hit = hit.color * diffuse_light;
 
                 result += colored_hit;
             }
@@ -74,13 +74,14 @@ impl Renderer {
 
                 if hops > 0 {
                     let bounced_indirect = self.calc_indirect_lighting(&bounced_hit, hops - 1);
-                    bounces_color += bounced_indirect.mult(&bounced_hit.color);
+                    bounces_color += bounced_indirect * bounced_hit.color;
                 }
             }
         }
         // calc average color
-        bounces_color.div_mut(SAMPLES_COUNT as f64);
+        bounces_color /= SAMPLES_COUNT as f64;
 
-        *bounces_color.mult_mut(&hit.color)
+        bounces_color *= hit.color;
+        bounces_color
     }
 }
