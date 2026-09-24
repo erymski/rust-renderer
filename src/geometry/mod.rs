@@ -11,6 +11,7 @@ mod tone_mapping;
 mod vec2;
 mod vec3;
 mod vec3_ops;
+mod vec3_utils;
 
 use std::fmt::Debug;
 
@@ -42,3 +43,4 @@ pub use tolerance::{
 };
 pub use tone_mapping::{ToneMapper, color_clamp, color_identity, color_reinhard};
 pub use vec3::{C, Color, P, Point3, UNIT_X, UNIT_Y, UNIT_Z, V, Vec3};
+pub use vec3_utils::random_unit;

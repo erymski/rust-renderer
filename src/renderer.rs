@@ -1,4 +1,6 @@
-use crate::geometry::{Color, DEFAULT_EPSILON, Hit, Hittable, Ray, Scene, Vec3, colors, is_zero};
+use crate::geometry::{
+    Color, DEFAULT_EPSILON, Hit, Hittable, Ray, Scene, colors, is_zero, random_unit,
+};
 
 const SAMPLES_COUNT: u32 = 7;
 const BOUNCE_COUNT: u32 = 2;
@@ -65,7 +67,7 @@ impl Renderer {
         let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
 
         for _ in 0..SAMPLES_COUNT {
-            let bounce_dir = (hit.normal + Vec3::random_unit()).normalize();
+            let bounce_dir = (hit.normal + random_unit()).normalize();
             let bounced_ray = Ray::new(hit_pt, bounce_dir);
 
             if let Some(bounced_hit) = self.scene.intersect(&bounced_ray) {

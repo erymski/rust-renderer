@@ -1,7 +1,5 @@
-use rand::random_range;
-use std::fmt;
-
 use crate::geometry::DEFAULT_EPSILON;
+use std::fmt;
 
 #[derive(Clone, Copy)]
 pub struct Vec3 {
@@ -103,23 +101,6 @@ impl Vec3 {
 
     pub const fn dot(&self, other: &Vec3) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
-    }
-
-    pub fn random_unit() -> Self {
-        loop {
-            let mut res = V(
-                random_range(-1.0..1.0),
-                random_range(-1.0..1.0),
-                random_range(-1.0..1.0),
-            );
-
-            // generate vector until it's inside unit sphere
-            let len_squared = res.length_squared();
-            if len_squared > DEFAULT_EPSILON && len_squared <= 1.0 {
-                res.div_mut(len_squared.sqrt());
-                return res;
-            }
-        }
     }
 }
 
@@ -243,16 +224,6 @@ mod tests {
         let to = P(1.0, 3.0, 1.0);
         from.sub_mut(&to);
         assert_vec3_eq(&from, &V(-2.0, -5., -1.));
-    }
-
-    #[test]
-    fn vec3_random() {
-        let v1 = Vec3::random_unit();
-        assert_approx_eq(v1.length_squared(), 1.0);
-        let v2 = Vec3::random_unit();
-        assert_approx_eq(v2.length_squared(), 1.0);
-
-        assert_vec3_neq(&v1, &v2);
     }
 
     #[test]
