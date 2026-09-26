@@ -1,5 +1,6 @@
 use crate::geometry::{
-    Color, DEFAULT_EPSILON, Hit, Hittable, Ray, Scene, colors, is_zero, random_unit,
+    Color, DEFAULT_EPSILON, Hit, Hittable, Lambertian, Material, Ray, Scene, colors, is_zero,
+    random_unit,
 };
 
 const SAMPLES_COUNT: u32 = 7;
@@ -23,19 +24,25 @@ impl Renderer {
     pub fn calc_point(&self, ray: &Ray) -> Color {
         match self.scene.intersect(ray) {
             Some(hit) => {
-                let direct_lighting = self.calc_direct_lighting(&hit);
-                let indirect_lighting = self.calc_indirect_lighting(&hit, BOUNCE_COUNT);
+                let material = self.scene.get_material(hit.material_index);
+                match material {
+                    Material::Lambertian(lambertian) => {
+                        let direct_lighting = self.calc_direct_lighting(&hit, &lambertian);
+                        let indirect_lighting =
+                            self.calc_indirect_lighting(&hit, &lambertian, BOUNCE_COUNT);
 
-                return direct_lighting + indirect_lighting;
+                        return direct_lighting + indirect_lighting;
+                    }
+                }
             }
             None => colors::WHITE,
         }
     }
 
     /// calculate direct lighting for the hit
-    fn calc_direct_lighting(&self, hit: &Hit) -> Color {
+    fn calc_direct_lighting(&self, hit: &Hit, material: &Lambertian) -> Color {
         let mut result = match &self.scene.ambient_light {
-            Some(light) => hit.color * light.color,
+            Some(light) => material.albedo * light.color,
             None => colors::BLACK,
         };
 
@@ -53,7 +60,7 @@ impl Renderer {
                 let diffuse = dir.dot(&hit.normal).max(0.0);
                 let diffuse_light = light.color.scale(diffuse);
 
-                let colored_hit = hit.color * diffuse_light;
+                let colored_hit = material.albedo * diffuse_light;
 
                 result += colored_hit;
             }
@@ -62,7 +69,7 @@ impl Renderer {
         result
     }
 
-    fn calc_indirect_lighting(&self, hit: &Hit, hops: u32) -> Color {
+    fn calc_indirect_lighting(&self, hit: &Hit, material: &Lambertian, hops: u32) -> Color {
         let mut bounces_color = colors::BLACK;
         let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
 
@@ -71,19 +78,25 @@ impl Renderer {
             let bounced_ray = Ray::new(hit_pt, bounce_dir);
 
             if let Some(bounced_hit) = self.scene.intersect(&bounced_ray) {
-                let bounced_direct = self.calc_direct_lighting(&bounced_hit);
-                bounces_color += bounced_direct;
+                let bounced_material = self.scene.get_material(bounced_hit.material_index);
+                match bounced_material {
+                    Material::Lambertian(lambertian) => {
+                        let bounced_direct = self.calc_direct_lighting(&bounced_hit, lambertian);
+                        bounces_color += bounced_direct;
 
-                if hops > 0 {
-                    let bounced_indirect = self.calc_indirect_lighting(&bounced_hit, hops - 1);
-                    bounces_color += bounced_indirect * bounced_hit.color;
+                        if hops > 0 {
+                            let bounced_indirect =
+                                self.calc_indirect_lighting(&bounced_hit, lambertian, hops - 1);
+                            bounces_color += bounced_indirect * lambertian.albedo;
+                        }
+                    }
                 }
             }
         }
         // calc average color
         bounces_color /= SAMPLES_COUNT as f64;
 
-        bounces_color *= hit.color;
+        bounces_color *= material.albedo;
         bounces_color
     }
 }

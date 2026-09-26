@@ -1,10 +1,11 @@
-use crate::geometry::{AmbientLight, DirectionalLight, Hit, Hittable, Ray};
+use crate::geometry::{AmbientLight, DirectionalLight, Hit, Hittable, Material, Ray};
 
 #[derive(Debug)]
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
     directional_lights: Vec<DirectionalLight>,
     pub ambient_light: Option<AmbientLight>,
+    materials: Vec<Material>,
 }
 
 impl Scene {
@@ -13,6 +14,7 @@ impl Scene {
             objects: Vec::new(),
             directional_lights: Vec::new(),
             ambient_light: None,
+            materials: Vec::new(),
         }
     }
 
@@ -29,6 +31,17 @@ impl Scene {
 
     pub fn lights(&self) -> &Vec<DirectionalLight> {
         &self.directional_lights
+    }
+
+    /// add material and return its index
+    pub fn add_material(&mut self, material: Material) -> usize {
+        self.materials.push(material);
+        self.materials.len() - 1
+    }
+
+    pub fn get_material(&self, index: usize) -> &Material {
+        // no check for bounds, fail hard explicitly
+        &self.materials[index]
     }
 }
 
@@ -69,7 +82,7 @@ mod tests {
     #[test]
     fn hit_sphere() {
         let mut scene = Scene::new();
-        scene.add_object(Sphere::blue(P(0.0, 0.0, 10.0), 5.0));
+        scene.add_object(Sphere::new(P(0.0, 0.0, 10.0), 5.0, 0));
         let ray = Ray::from_points(P(0.0, 0.0, 0.0), &P(0.0, 0.0, 1.0));
 
         let value = scene.intersect(&ray).expect("expected ray to hit sphere");
@@ -86,7 +99,7 @@ mod tests {
         for spheres in [[(10.0, 5.0), (16.0, 3.0)], [(16.0, 3.0), (10.0, 5.0)]] {
             let mut scene = Scene::new();
             for (z, radius) in spheres {
-                scene.add_object(Sphere::blue(P(0.0, 0.0, z), radius));
+                scene.add_object(Sphere::new(P(0.0, 0.0, z), radius, 3));
             }
 
             let value = scene.intersect(&ray).expect("expected ray to hit sphere");

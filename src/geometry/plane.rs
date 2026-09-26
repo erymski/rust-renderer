@@ -1,4 +1,4 @@
-use crate::geometry::{Color, Hit, Hittable, Point3, Ray, Vec3, tolerance::is_zero, vec3_eq};
+use crate::geometry::{Hit, Hittable, Point3, Ray, Vec3, tolerance::is_zero, vec3_eq};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Plane {
@@ -8,16 +8,16 @@ pub struct Plane {
     /// normal to the plane. Expected to be a unit vector.
     pub normal: Vec3,
 
-    pub color: Color,
+    material_index: usize,
 }
 
 impl Plane {
     /// create new plane with unitized normal
-    pub fn new(point: Point3, normal: &Vec3, color: Color) -> Self {
+    pub fn new(point: Point3, normal: &Vec3, material_index: usize) -> Self {
         Self {
             point,
             normal: normal.normalize(),
-            color,
+            material_index,
         }
     }
 }
@@ -25,7 +25,7 @@ impl Plane {
 impl Hittable for Plane {
     fn intersect(&self, ray: &Ray) -> Option<Hit> {
         if vec3_eq(&ray.from, &self.point) {
-            return Some(Hit::new(self.point, self.normal, 0.0, self.color));
+            return Some(Hit::new(self.point, self.normal, 0.0, self.material_index));
         }
 
         let dn = ray.dir.dot(&self.normal);
@@ -48,7 +48,7 @@ impl Hittable for Plane {
         }
         let intersection = ray.from + (ray.dir * t);
 
-        Some(Hit::new(intersection, self.normal, t, self.color))
+        Some(Hit::new(intersection, self.normal, t, self.material_index))
     }
 }
 
@@ -62,25 +62,25 @@ mod tests {
 
     #[test]
     fn plane_intersection_simple_orientation() {
-        let plane = Plane::new(P(0., 0., 0.), &V(1., 0., 0.), colors::BLUE);
+        let plane = Plane::new(P(0., 0., 0.), &V(1., 0., 0.), 25);
 
         let ray = Ray::from_points(P(10., 2., 6.), &P(-3., 2., 6.));
         let intersection = plane.intersect(&ray).unwrap();
         assert_vec3_eq(&intersection.point, &P(0., 2., 6.));
         assert_vec3_eq(&intersection.normal, &plane.normal);
-        assert_vec3_eq(&intersection.color, &colors::BLUE);
+        assert_eq!(intersection.material_index, 25);
         assert_approx_eq(intersection.t, 10.);
     }
 
     #[test]
     fn plane_intersection_complex_orientation() {
-        let plane = Plane::new(P(1., 2., 3.), &V(2., -1., 1.), colors::GREEN);
+        let plane = Plane::new(P(1., 2., 3.), &V(2., -1., 1.), 55);
 
         let ray = Ray::from_points(P(0., 0., 0.), &P(2., 1., 1.));
         let intersection = plane.intersect(&ray).unwrap();
         assert_vec3_eq(&intersection.point, &P(1.5, 0.75, 0.75));
         assert_vec3_eq(&intersection.normal, &plane.normal);
-        assert_vec3_eq(&intersection.color, &colors::GREEN);
+        assert_eq!(intersection.material_index, 55);
         assert_approx_eq(intersection.t, 1.837_117_307_08);
     }
 

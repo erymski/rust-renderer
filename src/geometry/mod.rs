@@ -2,6 +2,7 @@ mod camera;
 pub(crate) mod colors;
 mod hit;
 mod lights;
+mod material;
 mod plane;
 mod ray;
 mod scene;
@@ -19,10 +20,6 @@ pub(crate) trait Hittable: Debug {
     fn intersect(&self, ray: &Ray) -> Option<Hit>;
 }
 
-pub(crate) trait Primitive: Hittable {
-    fn color(&self) -> vec3::Color;
-}
-
 pub struct RenderingSet {
     pub scene: Scene,
     pub camera: Camera,
@@ -34,6 +31,7 @@ mod test_utils;
 pub use camera::{Camera, Viewport};
 pub use hit::Hit;
 pub use lights::{AmbientLight, DirectionalLight};
+pub use material::{Lambertian, Material};
 pub use plane::Plane;
 pub use ray::Ray;
 pub use scene::Scene;

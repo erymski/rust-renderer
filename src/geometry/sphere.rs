@@ -1,27 +1,18 @@
-use crate::geometry::{Color, Hit, Hittable, Point3, Primitive, Ray, colors};
+use crate::geometry::{Hit, Hittable, Point3, Ray};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Sphere {
     pub center: Point3,
     pub radius: f64,
-    color: Color,
+    material_index: usize,
 }
 
 impl Sphere {
-    pub const fn new(center: Point3, radius: f64, color: Color) -> Self {
+    pub const fn new(center: Point3, radius: f64, material_index: usize) -> Self {
         Sphere {
             center,
             radius,
-            color,
-        }
-    }
-
-    /// Creates a sphere with a default color (blue). Mostly for testing purposes.
-    pub const fn blue(center: Point3, radius: f64) -> Self {
-        Sphere {
-            center,
-            radius,
-            color: colors::BLUE,
+            material_index,
         }
     }
 }
@@ -56,14 +47,8 @@ impl Hittable for Sphere {
 
             let point = ray.from + (ray.dir * t);
             let normal = (point - self.center).normalize();
-            Some(Hit::new(point, normal, t, self.color))
+            Some(Hit::new(point, normal, t, self.material_index))
         }
-    }
-}
-
-impl Primitive for Sphere {
-    fn color(&self) -> Color {
-        self.color
     }
 }
 
@@ -74,7 +59,7 @@ mod tests {
 
     use super::*;
 
-    const SPHERE: Sphere = Sphere::blue(Point3::new(0.0, 0.0, 0.0), 10.0);
+    const SPHERE: Sphere = Sphere::new(Point3::new(0.0, 0.0, 0.0), 10.0, 12);
 
     // TODO: need more tests for sphere hit/miss, including edge cases and rays that start inside the sphere
 
