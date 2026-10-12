@@ -1,6 +1,6 @@
 use crate::geometry::{
     Color, DEFAULT_EPSILON, Hit, Hittable, Lambertian, Material, Ray, Scene, colors, is_zero,
-    random_unit,
+    random_unit, reflect,
 };
 
 const SAMPLES_COUNT: u32 = 7;
@@ -28,10 +28,16 @@ impl Renderer {
                 match material {
                     Material::Lambertian(lambertian) => {
                         let direct_lighting = self.calc_direct_lighting(&hit, &lambertian);
-                        let indirect_lighting =
-                            self.calc_indirect_lighting(&hit, &lambertian, BOUNCE_COUNT);
+                        let indirect_lighting = self.calc_indirect_lighting(&hit, BOUNCE_COUNT);
 
-                        return direct_lighting + indirect_lighting;
+                        return direct_lighting + (indirect_lighting * lambertian.albedo);
+                    }
+                    Material::Metal(metal) => {
+                        let reflected_v = reflect(ray.dir, hit.normal);
+                        let reflected_ray =
+                            Ray::new(hit.point + hit.normal * DEFAULT_EPSILON, reflected_v);
+                        let indirect = self.calc_indirect_lighting(&hit, BOUNCE_COUNT);
+                        metal.color * indirect
                     }
                 }
             }
@@ -69,9 +75,9 @@ impl Renderer {
         result
     }
 
-    fn calc_indirect_lighting(&self, hit: &Hit, material: &Lambertian, hops: u32) -> Color {
+    fn calc_indirect_lighting(&self, hit: &Hit, ray: &Ray, hops: u32) -> Color {
         let mut bounces_color = colors::BLACK;
-        let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
+        let hit_pt = ray.from + hit.normal.scale(DEFAULT_EPSILON);
 
         for _ in 0..SAMPLES_COUNT {
             let bounce_dir = (hit.normal + random_unit()).normalize();
@@ -86,17 +92,17 @@ impl Renderer {
 
                         if hops > 0 {
                             let bounced_indirect =
-                                self.calc_indirect_lighting(&bounced_hit, lambertian, hops - 1);
+                                self.calc_indirect_lighting(&bounced_hit, hops - 1);
                             bounces_color += bounced_indirect * lambertian.albedo;
                         }
                     }
+                    Material::Metal(metal) => {}
                 }
             }
         }
         // calc average color
         bounces_color /= SAMPLES_COUNT as f64;
 
-        bounces_color *= material.albedo;
         bounces_color
     }
 }
