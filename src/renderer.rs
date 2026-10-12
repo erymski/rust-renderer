@@ -47,10 +47,7 @@ impl Renderer {
 
     /// calculate direct lighting for the hit
     fn calc_direct_lighting(&self, hit: &Hit, material: &Lambertian) -> Color {
-        let mut result = match &self.scene.ambient_light {
-            Some(light) => material.albedo * light.color,
-            None => colors::BLACK,
-        };
+        let mut result = colors::BLACK;
 
         let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
 

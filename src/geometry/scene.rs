@@ -4,7 +4,6 @@ use crate::geometry::{AmbientLight, DirectionalLight, Hit, Hittable, Material, R
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
     directional_lights: Vec<DirectionalLight>,
-    pub ambient_light: Option<AmbientLight>,
     materials: Vec<Material>,
 }
 
@@ -13,7 +12,6 @@ impl Scene {
         Scene {
             objects: Vec::new(),
             directional_lights: Vec::new(),
-            ambient_light: None,
             materials: Vec::new(),
         }
     }
