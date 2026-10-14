@@ -1,5 +1,5 @@
 use crate::geometry::{
-    Color, DEFAULT_EPSILON, Hit, Hittable, Lambertian, Material, Ray, Scene, colors, is_zero,
+    Color, Hit, Hittable, Lambertian, Material, Ray, Scene, colors, is_zero, make_offset,
     random_unit, reflect,
 };
 
@@ -34,8 +34,7 @@ impl Renderer {
                     }
                     Material::Metal(metal) => {
                         let reflected_v = reflect(ray.dir, hit.normal);
-                        let reflected_ray =
-                            Ray::new(hit.point + hit.normal * DEFAULT_EPSILON, reflected_v);
+                        let reflected_ray = Ray::new(hit.calc_offset(), reflected_v);
                         let indirect = self.calc_indirect_lighting(&hit, BOUNCE_COUNT);
                         metal.color * indirect
                     }
@@ -49,7 +48,7 @@ impl Renderer {
     fn calc_direct_lighting(&self, hit: &Hit, material: &Lambertian) -> Color {
         let mut result = colors::BLACK;
 
-        let hit_pt = hit.point + hit.normal.scale(DEFAULT_EPSILON);
+        let hit_pt = hit.calc_offset();
 
         for light in self.scene.lights() {
             // check if the light is reachable
@@ -74,7 +73,7 @@ impl Renderer {
 
     fn calc_indirect_lighting(&self, hit: &Hit, ray: &Ray, hops: u32) -> Color {
         let mut bounces_color = colors::BLACK;
-        let hit_pt = ray.from + hit.normal.scale(DEFAULT_EPSILON);
+        let hit_pt = make_offset(ray.from, hit.normal);
 
         for _ in 0..SAMPLES_COUNT {
             let bounce_dir = (hit.normal + random_unit()).normalize();

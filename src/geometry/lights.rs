@@ -15,16 +15,3 @@ impl DirectionalLight {
         }
     }
 }
-
-#[derive(Debug, Clone, Copy)]
-pub struct AmbientLight {
-    pub color: Color,
-}
-
-impl AmbientLight {
-    pub const fn with_intensity(color: &Color, intensity: f64) -> Self {
-        Self {
-            color: color.scale(intensity),
-        }
-    }
-}

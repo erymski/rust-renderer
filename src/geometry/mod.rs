@@ -30,7 +30,7 @@ mod test_utils;
 
 pub use camera::{Camera, Viewport};
 pub use hit::Hit;
-pub use lights::{AmbientLight, DirectionalLight};
+pub use lights::DirectionalLight;
 pub use material::{Lambertian, Material};
 pub use plane::Plane;
 pub use ray::Ray;
@@ -41,4 +41,4 @@ pub use tolerance::{
 };
 pub use tone_mapping::{ToneMapper, color_clamp, color_identity, color_reinhard};
 pub use vec3::{C, Color, P, Point3, UNIT_X, UNIT_Y, UNIT_Z, V, Vec3};
-pub use vec3_utils::{random_unit, reflect};
+pub use vec3_utils::{make_offset, random_unit, reflect};

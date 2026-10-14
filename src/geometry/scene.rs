@@ -1,4 +1,4 @@
-use crate::geometry::{AmbientLight, DirectionalLight, Hit, Hittable, Material, Ray};
+use crate::geometry::{DirectionalLight, Hit, Hittable, Material, Ray};
 
 #[derive(Debug)]
 pub struct Scene {

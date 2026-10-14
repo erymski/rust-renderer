@@ -123,7 +123,7 @@ pub const C: fn(x: f64, y: f64, z: f64) -> Color = Vec3::new;
 
 #[cfg(test)]
 mod tests {
-    use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq, assert_vec3_neq};
+    use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
 
     use super::*;
 

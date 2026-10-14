@@ -56,7 +56,7 @@ impl Hittable for Plane {
 mod tests {
 
     use crate::geometry::test_utils::{assert_approx_eq, assert_vec3_eq};
-    use crate::geometry::{P, V, colors};
+    use crate::geometry::{P, V};
 
     use super::*;
 
