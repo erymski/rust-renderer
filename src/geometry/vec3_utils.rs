@@ -67,6 +67,6 @@ mod tests {
         let offset = make_offset(p, normal);
 
         let dir = (offset - p).normalize();
-        assert_approx_eq(dir.dot(&normal), 0.0);
+        assert_approx_eq(dir.dot(&normal), 1.0);
     }
 }

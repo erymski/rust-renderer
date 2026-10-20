@@ -37,6 +37,6 @@ mod test {
         let offset = hit.calc_offset();
 
         let dir = (offset - hit.point).normalize();
-        assert_approx_eq(dir.dot(&hit.normal), 0.0);
+        assert_approx_eq(dir.dot(&hit.normal.normalize()), 1.0);
     }
 }

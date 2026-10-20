@@ -34,7 +34,7 @@ impl Renderer {
                     }
                     Material::Metal(metal) => {
                         let reflected_v = reflect(ray.dir, hit.normal);
-                        let reflected_ray = Ray::new(hit.calc_offset(), reflected_v);
+                        let _reflected_ray = Ray::new(hit.calc_offset(), reflected_v);
                         let indirect = self.calc_indirect_lighting(&hit, BOUNCE_COUNT);
                         metal.color * indirect
                     }
@@ -71,9 +71,9 @@ impl Renderer {
         result
     }
 
-    fn calc_indirect_lighting(&self, hit: &Hit, ray: &Ray, hops: u32) -> Color {
+    fn calc_indirect_lighting(&self, hit: &Hit, hops: u32) -> Color {
         let mut bounces_color = colors::BLACK;
-        let hit_pt = make_offset(ray.from, hit.normal);
+        let hit_pt = make_offset(hit.point, hit.normal);
 
         for _ in 0..SAMPLES_COUNT {
             let bounce_dir = (hit.normal + random_unit()).normalize();
@@ -92,7 +92,7 @@ impl Renderer {
                             bounces_color += bounced_indirect * lambertian.albedo;
                         }
                     }
-                    Material::Metal(metal) => {}
+                    Material::Metal(_metal) => {}
                 }
             }
         }
