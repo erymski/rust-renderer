@@ -1,6 +1,6 @@
 use crate::geometry::{
-    C, Camera, DirectionalLight, Lambertian, Material, P, Plane, RenderingSet, Scene, Sphere,
-    UNIT_Y, V,
+    C, Camera, DirectionalLight, Lambertian, Material, Metal, P, Plane, RenderingSet, Scene,
+    Sphere, UNIT_Y, V,
 };
 
 // pub(crate) fn build_scene() -> Scene {
@@ -63,8 +63,9 @@ pub(crate) fn build_scene2() -> Scene {
         albedo: C(0.20, 0.65, 0.08),
     }));
 
-    let gray_index = scene.add_material(Material::Lambertian(Lambertian {
-        albedo: C(0.85, 0.88, 0.92),
+    let gray_index = scene.add_material(Material::Metal(Metal {
+        color: C(0.85, 0.88, 0.92),
+        roughness: 0.0,
     }));
 
     let ground_index = scene.add_material(Material::Lambertian(Lambertian {
@@ -77,12 +78,6 @@ pub(crate) fn build_scene2() -> Scene {
         V(0.55, -0.75, -0.35).normalize(),
         1.4,
     ));
-
-    //// now ambient light is not necessary, because we have bouncing lighting
-    // scene.ambient_light = Some(AmbientLight::with_intensity(
-    //     &C(0.12, 0.14, 0.18),
-    //     1., // TODO: adjust ambient light intensity
-    // ));
 
     // scene objects
 

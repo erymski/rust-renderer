@@ -31,7 +31,7 @@ mod test_utils;
 pub use camera::{Camera, Viewport};
 pub use hit::Hit;
 pub use lights::DirectionalLight;
-pub use material::{Lambertian, Material};
+pub use material::{Lambertian, Material, Metal};
 pub use plane::Plane;
 pub use ray::Ray;
 pub use scene::Scene;

@@ -55,7 +55,8 @@ fn main() {
             let pixel_in_world = P(offset_x_world, offset_y_world, 0.0) + vp_center;
             let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
-            let color = renderer.calc_point(&ray);
+            // let color = renderer.calc_point(&ray);
+            let color = renderer.go(&ray);
             let squeezed_color = tone_mapper(&color);
 
             img.put_pixel(x_px, y_px, to_rgb(&squeezed_color));
