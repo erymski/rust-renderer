@@ -36,7 +36,17 @@ impl Renderer {
                 let material = self.scene.get_material(hit.material_index);
                 match material {
                     Material::Lambertian(lambertian) => {
-                        self.calc_direct_lighting(&hit, &lambertian)
+                        let direct = self.calc_direct_lighting(&hit, &lambertian);
+                        if hops == 0 {
+                            return direct;
+                        }
+
+                        let bounce_dir = (hit.normal + random_unit()).normalize();
+                        let hit_pt = hit.calc_offset();
+
+                        let bounced_ray = Ray::new(hit_pt, bounce_dir);
+                        let indirect = self.trace(&bounced_ray, hops - 1);
+                        direct + (indirect * lambertian.albedo)
                     }
                     Material::Metal(metal) => metal.color,
                 }

@@ -5,6 +5,7 @@ mod lights;
 mod material;
 mod plane;
 mod ray;
+mod scatter;
 mod scene;
 mod sphere;
 mod tolerance;
