@@ -1,5 +1,6 @@
 mod camera;
 pub(crate) mod colors;
+mod context;
 mod hit;
 mod lights;
 mod material;
@@ -30,6 +31,7 @@ pub struct RenderingSet {
 mod test_utils;
 
 pub use camera::{Camera, Viewport};
+pub use context::RenderingContext;
 pub use hit::Hit;
 pub use lights::DirectionalLight;
 pub use material::{Lambertian, Material, Metal};

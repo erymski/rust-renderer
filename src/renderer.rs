@@ -1,9 +1,9 @@
 use crate::geometry::{
-    Color, Hit, Hittable, Lambertian, Material, Ray, Scene, colors, is_zero, make_offset,
-    random_unit, reflect,
+    Color, Hit, Hittable, Lambertian, Material, Ray, RenderingContext, Scene, colors, is_zero,
+    make_offset, random_unit, reflect,
 };
 
-const SAMPLES_COUNT: u32 = 4;
+const SAMPLES_COUNT: u32 = 5;
 const BOUNCE_COUNT: u32 = 3;
 
 pub struct Renderer {
@@ -21,22 +21,33 @@ impl Renderer {
         }
     }
 
-    pub fn go(&self, ray: &Ray) -> Color {
+    pub fn go(&self, ray: &Ray, context: &RenderingContext) -> Color {
         let mut bounces_color = colors::BLACK;
         for _ in 0..SAMPLES_COUNT {
-            bounces_color += self.trace(ray, BOUNCE_COUNT)
+            bounces_color += self.trace(ray, BOUNCE_COUNT, context)
         }
         bounces_color / SAMPLES_COUNT as f64
     }
 
-    fn trace(&self, ray: &Ray, hops: u32) -> Color {
+    fn trace(&self, ray: &Ray, hops: u32, context: &RenderingContext) -> Color {
         match self.scene.intersect(ray) {
-            None => colors::WHITE,
+            None => Color::new(0.25, 0.37, 0.5),
             Some(hit) => {
+                let dbg = false; //(context.x == 0) && (context.y == context.height - 1);
+
                 let material = self.scene.get_material(hit.material_index);
                 match material {
                     Material::Lambertian(lambertian) => {
+                        if dbg {
+                            println!("{:?}", lambertian)
+                        }
+
                         let direct = self.calc_direct_lighting(&hit, &lambertian);
+
+                        if dbg {
+                            println!("direct: {:?}", direct)
+                        }
+
                         if hops == 0 {
                             return direct;
                         }
@@ -45,10 +56,15 @@ impl Renderer {
                         let hit_pt = hit.calc_offset();
 
                         let bounced_ray = Ray::new(hit_pt, bounce_dir);
-                        let indirect = self.trace(&bounced_ray, hops - 1);
+                        let indirect = self.trace(&bounced_ray, hops - 1, context);
+
+                        if dbg {
+                            println!("indirect: {:?}", indirect);
+                            println!("total: {:?}", direct + (indirect * lambertian.albedo));
+                        }
                         direct + (indirect * lambertian.albedo)
                     }
-                    Material::Metal(metal) => metal.color,
+                    Material::Metal(_metal) => colors::BLACK, // metal.color,
                 }
             }
         }

@@ -7,7 +7,7 @@ mod scene_loader;
 
 use geometry::{Color, P, Ray, RenderingSet, ToneMapper, color_clamp};
 
-use crate::scene_loader::second_set;
+use crate::{geometry::RenderingContext, scene_loader::second_set};
 
 #[allow(clippy::cast_possible_truncation)]
 fn to_rgb(color: &Color) -> Rgb<u8> {
@@ -56,7 +56,15 @@ fn main() {
             let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
             // let color = renderer.calc_point(&ray);
-            let color = renderer.go(&ray);
+            let color = renderer.go(
+                &ray,
+                &RenderingContext {
+                    x: x_px,
+                    y: y_px,
+                    width: width_px,
+                    height: height_px,
+                },
+            );
             let squeezed_color = tone_mapper(&color);
 
             img.put_pixel(x_px, y_px, to_rgb(&squeezed_color));
