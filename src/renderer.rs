@@ -1,7 +1,7 @@
 use crate::geometry::{Color, Hit, Hittable, Ray, RenderingContext, Scatterized, Scene, colors};
 
-const SAMPLES_COUNT: u32 = 4;
-const BOUNCE_COUNT: u32 = 4;
+const SAMPLES_COUNT: u32 = 25;
+const BOUNCE_COUNT: u32 = 3;
 
 pub struct Renderer {
     pub width: u32,

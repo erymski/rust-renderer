@@ -65,7 +65,7 @@ pub(crate) fn build_scene2() -> Scene {
 
     let gray_index = scene.add_material(Material::Metal(Metal {
         color: C(0.85, 0.88, 0.92),
-        roughness: 0.0,
+        roughness: 0.2,
     }));
 
     let ground_index = scene.add_material(Material::Lambertian(Lambertian {
