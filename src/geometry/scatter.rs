@@ -6,5 +6,5 @@ pub struct Scatter {
 }
 
 pub trait Scatterized {
-    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Scatter;
+    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Option<Scatter>;
 }

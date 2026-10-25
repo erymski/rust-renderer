@@ -9,15 +9,15 @@ pub struct Lambertian {
 }
 
 impl Scatterized for Lambertian {
-    fn build_scatter(&self, _incoming_ray: &Ray, hit: &Hit) -> super::scatter::Scatter {
+    fn build_scatter(&self, _incoming_ray: &Ray, hit: &Hit) -> Option<Scatter> {
         let bounce_dir = (hit.normal + random_unit()).normalize();
         let hit_pt = hit.calc_offset();
 
         let bounced_ray = Ray::new(hit_pt, bounce_dir);
-        Scatter {
+        Some(Scatter {
             attenuation: self.albedo,
             ray: bounced_ray,
-        }
+        })
     }
 }
 
@@ -34,14 +34,14 @@ pub struct Metal {
 }
 
 impl Scatterized for Metal {
-    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Scatter {
+    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Option<Scatter> {
         let reflected_v = reflect(incoming_ray.dir, hit.normal);
         let reflected_ray = Ray::new(hit.calc_offset(), reflected_v); // TODO: use roughness
 
-        Scatter {
+        Some(Scatter {
             ray: reflected_ray,
             attenuation: self.color,
-        }
+        })
     }
 }
 
@@ -52,7 +52,7 @@ pub enum Material {
 }
 
 impl Scatterized for Material {
-    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Scatter {
+    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Option<Scatter> {
         match self {
             Material::Lambertian(lambertian) => lambertian.build_scatter(incoming_ray, hit),
             Material::Metal(metal) => metal.build_scatter(incoming_ray, hit),

@@ -26,12 +26,19 @@ impl Renderer {
         bounces_color / SAMPLES_COUNT as f64
     }
 
+    fn background_color(&self, _ray: &Ray) -> Color {
+        Color::new(0.25, 0.37, 0.5)
+    }
+
     fn trace(&self, ray: &Ray, hops: u32, context: &RenderingContext) -> Color {
         match self.scene.intersect(ray) {
-            None => Color::new(0.25, 0.37, 0.5),
+            None => self.background_color(ray),
             Some(hit) => {
                 let material = self.scene.get_material(hit.material_index);
-                let scatter = material.build_scatter(ray, &hit);
+                let Some(scatter) = material.build_scatter(ray, &hit) else {
+                    return colors::BLACK;
+                };
+
                 let mut lighting = self.calc_direct_lighting(&hit) * scatter.attenuation;
                 if hops > 0 {
                     lighting += self.trace(&scatter.ray, hops - 1, context);
