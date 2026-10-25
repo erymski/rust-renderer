@@ -37,6 +37,7 @@ pub use lights::DirectionalLight;
 pub use material::{Lambertian, Material, Metal};
 pub use plane::Plane;
 pub use ray::Ray;
+pub use scatter::{Scatter, Scatterized};
 pub use scene::Scene;
 pub use sphere::Sphere;
 pub use tolerance::{

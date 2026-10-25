@@ -50,3 +50,12 @@ pub enum Material {
     Lambertian(Lambertian),
     Metal(Metal),
 }
+
+impl Scatterized for Material {
+    fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Scatter {
+        match self {
+            Material::Lambertian(lambertian) => lambertian.build_scatter(incoming_ray, hit),
+            Material::Metal(metal) => metal.build_scatter(incoming_ray, hit),
+        }
+    }
+}
