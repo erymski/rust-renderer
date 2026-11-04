@@ -46,5 +46,19 @@ mod tests {
         assert!(!vec3_eq(&v1, &v2));
     }
 
-    // TODO: Add more tests for tolerance
+    #[test]
+    fn eq_floats() {
+        assert!(approx_eq(123.0, 123.0 + DEFAULT_EPSILON / 2.0))
+    }
+
+    #[test]
+    fn eq_custom_floats() {
+        assert!(approx_eq_custom(5.0, 7.0, 4.0));
+        assert!(!approx_eq_custom(5.0, 7.0, 0.4));
+    }
+
+    #[test]
+    fn zero_check() {
+        assert!(is_zero(DEFAULT_EPSILON / 2.0))
+    }
 }

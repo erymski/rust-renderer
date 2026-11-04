@@ -51,8 +51,9 @@ mod tests {
         assert_approx_eq(reinhard(100_000_000_000_000.), 1.0);
     }
 
+    #[test]
     fn reinhard_color_check() {
         let color = C(1., 12., 0.);
-        assert_vec3_eq(&color_clamp(&color), &C(0.5, 12. / 13., 0.));
+        assert_vec3_eq(&color_reinhard(&color), &C(0.5, 12. / 13., 0.));
     }
 }

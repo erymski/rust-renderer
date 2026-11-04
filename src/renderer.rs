@@ -61,7 +61,6 @@ impl Renderer {
             let intersect_to_light = self.scene.intersect(&ray_to_light);
 
             // TODO: defect - exclude itself from intersections, otherwise we can miss a real hit
-            // if intersect_to_light.is_none_or(|hit2| is_zero(hit2.t)) {
             if intersect_to_light.is_none() {
                 // nothing between light and the object
                 let dir = light.direction.scale(-1.);
