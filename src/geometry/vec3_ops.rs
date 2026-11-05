@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, Mul, MulAssign, Sub, SubAssign};
 
 use crate::geometry::Vec3;
 
@@ -68,5 +68,38 @@ impl Div<f64> for Vec3 {
 impl DivAssign<f64> for Vec3 {
     fn div_assign(&mut self, rhs: f64) {
         Vec3::div_mut(self, rhs);
+    }
+}
+
+impl Index<usize> for Vec3 {
+    type Output = f64;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("index out of bounds"),
+        }
+    }
+}
+
+mod tests {
+    use super::*;
+    use crate::geometry::V;
+
+    #[test]
+    fn vector_indexes() {
+        let v = V(1.0, 2.0, 3.0);
+        assert_eq!(v[0], v.x);
+        assert_eq!(v[1], v.y);
+        assert_eq!(v[2], v.z);
+    }
+
+    #[test]
+    #[should_panic]
+    fn vector_bad_index() {
+        let vec = V(1.0, 2.0, 3.0);
+        let _ = vec[3];
     }
 }
