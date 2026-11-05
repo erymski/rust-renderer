@@ -28,7 +28,7 @@ impl Hittable for Plane {
             return Some(Hit::new(self.point, self.normal, 0.0, self.material_index));
         }
 
-        let dn = ray.dir.dot(&self.normal);
+        let dn = ray.dir().dot(&self.normal);
         if is_zero(dn) {
             // ray perpendicular to the plane normal
             return None; // TODO: right?
@@ -46,7 +46,7 @@ impl Hittable for Plane {
             // wrong direction
             return None; // TODO: think if it can be done faster
         }
-        let intersection = ray.from + (ray.dir * t);
+        let intersection = ray.from + (ray.dir() * t);
 
         Some(Hit::new(intersection, self.normal, t, self.material_index))
     }

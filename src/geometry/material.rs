@@ -36,7 +36,7 @@ pub struct Metal {
 impl Scatterized for Metal {
     fn build_scatter(&self, incoming_ray: &Ray, hit: &Hit) -> Option<Scatter> {
         let random = random_unit() * self.roughness; // add roughness for metal
-        let reflected_v = (reflect(incoming_ray.dir, hit.normal) + random).normalize();
+        let reflected_v = (reflect(incoming_ray.dir(), hit.normal) + random).normalize();
         if reflected_v.dot(&hit.normal) <= 0.0 {
             return None;
         }

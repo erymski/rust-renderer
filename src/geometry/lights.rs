@@ -8,10 +8,10 @@ pub struct DirectionalLight {
 }
 
 impl DirectionalLight {
-    pub const fn with_intensity(color: &Color, direction: Vec3, intensity: f64) -> Self {
+    pub fn with_intensity(color: &Color, direction: Vec3, intensity: f64) -> Self {
         Self {
             color: color.scale(intensity),
-            direction,
+            direction: direction.normalize(),
         }
     }
 }

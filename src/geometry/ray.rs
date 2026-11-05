@@ -4,7 +4,7 @@ use crate::geometry::vec3::{Point3, Vec3};
 pub struct Ray {
     pub from: Point3,
     /// Normalized direction vector
-    pub dir: Vec3,
+    dir: Vec3,
 }
 
 impl Ray {
@@ -17,6 +17,10 @@ impl Ray {
 
     pub fn from_points(from: Point3, to: &Point3) -> Self {
         Ray::new(from, *to - from)
+    }
+
+    pub fn dir(&self) -> Vec3 {
+        self.dir
     }
 }
 

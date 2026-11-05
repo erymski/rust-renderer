@@ -22,7 +22,7 @@ impl Hittable for Sphere {
         let oc = ray.from - self.center;
         let oc_len = oc.length();
 
-        let b = -2.0 * oc.dot(&ray.dir); // negate immediately, minor optimization to avoid negating later
+        let b = -2.0 * oc.dot(&ray.dir()); // negate immediately, minor optimization to avoid negating later
         let c = (oc_len * oc_len) - (self.radius * self.radius);
         let discriminant = b * b - 4.0 * c;
 
@@ -45,7 +45,7 @@ impl Hittable for Sphere {
 
             t *= 0.5;
 
-            let point = ray.from + (ray.dir * t);
+            let point = ray.from + (ray.dir() * t);
             let normal = (point - self.center).normalize();
             Some(Hit::new(point, normal, t, self.material_index))
         }

@@ -1,6 +1,6 @@
 use crate::geometry::{DirectionalLight, Hit, Hittable, Material, Ray};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
     directional_lights: Vec<DirectionalLight>,
@@ -9,11 +9,7 @@ pub struct Scene {
 
 impl Scene {
     pub fn new() -> Self {
-        Scene {
-            objects: Vec::new(),
-            directional_lights: Vec::new(),
-            materials: Vec::new(),
-        }
+        Self::default()
     }
 
     pub fn add_object<T>(&mut self, obj: T)
@@ -27,7 +23,7 @@ impl Scene {
         self.directional_lights.push(light);
     }
 
-    pub fn lights(&self) -> &Vec<DirectionalLight> {
+    pub fn lights(&self) -> &[DirectionalLight] {
         &self.directional_lights
     }
 

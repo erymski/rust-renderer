@@ -84,6 +84,7 @@ impl Index<usize> for Vec3 {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::geometry::V;

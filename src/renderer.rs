@@ -23,7 +23,7 @@ impl Renderer {
         for _ in 0..SAMPLES_COUNT {
             bounces_color += self.trace(ray, BOUNCE_COUNT, context)
         }
-        bounces_color / SAMPLES_COUNT as f64
+        bounces_color / f64::from(SAMPLES_COUNT)
     }
 
     fn background_color(&self, _ray: &Ray) -> Color {
@@ -39,7 +39,7 @@ impl Renderer {
                     return colors::BLACK;
                 };
 
-                let mut lighting = self.calc_direct_lighting(&hit) * scatter.attenuation;
+                let mut lighting = self.calc_direct_lighting(&hit);
                 if hops > 0 {
                     lighting += self.trace(&scatter.ray, hops - 1, context);
                 }
