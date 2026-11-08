@@ -69,18 +69,21 @@ impl Hittable for AABox {
 #[cfg(test)]
 mod tests {
 
+    use super::*;
     use crate::geometry::{P, V, test_utils::assert_vec3_eq};
 
-    use super::*;
-
-    #[test]
-    fn box_diagonal() {
-        let b = AABox {
+    /// box (0,0,0) - (5,5,5)
+    fn test_box() -> AABox {
+        AABox {
             min: P(0.0, 0.0, 0.0),
             max: P(5.0, 5.0, 5.0),
             material_index: 3,
-        };
+        }
+    }
 
+    #[test]
+    fn box_diagonal() {
+        let b = test_box();
         let r = Ray::new(P(6.0, 0.0, 1.0), V(-1.0, 1.0, 1.0));
 
         let res = b.intersect(&r);
@@ -88,5 +91,26 @@ mod tests {
 
         let hit = res.unwrap();
         assert_vec3_eq(&hit.point, &P(5.0, 1.0, 2.0));
+    }
+
+    #[test]
+    fn box_no_intersect() {
+        let b = test_box();
+        let r = Ray::new(P(6.0, 0.0, 1.0), V(1.0, 1.0, 1.0));
+
+        let res = b.intersect(&r);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn box_from_inside() {
+        let b = test_box();
+        let r = Ray::new(P(4.0, 3.0, 2.0), V(1.0, 1.0, 1.0));
+
+        let res = b.intersect(&r);
+        assert!(!res.is_none());
+
+        let hit = res.unwrap();
+        assert_vec3_eq(&hit.point, &P(5.0, 4.0, 3.0));
     }
 }
