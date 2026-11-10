@@ -1,5 +1,5 @@
 use crate::geometry::{
-    C, Camera, DirectionalLight, Lambertian, Material, Metal, P, Plane, RenderingSet, Scene,
+    AABox, C, Camera, DirectionalLight, Lambertian, Material, Metal, P, Plane, RenderingSet, Scene,
     Sphere, UNIT_Y, V,
 };
 
@@ -63,9 +63,13 @@ pub(crate) fn build_scene2() -> Scene {
         albedo: C(0.20, 0.65, 0.08),
     }));
 
-    let gray_index = scene.add_material(Material::Metal(Metal {
+    let blue_index = scene.add_material(Material::Lambertian(Lambertian {
+        albedo: C(0.05, 0.22, 0.80),
+    }));
+
+    let metallic_index = scene.add_material(Material::Metal(Metal {
         color: C(0.85, 0.88, 0.92),
-        roughness: 0.2,
+        roughness: 0.15,
     }));
 
     let ground_index = scene.add_material(Material::Lambertian(Lambertian {
@@ -87,8 +91,14 @@ pub(crate) fn build_scene2() -> Scene {
     // small green sphere
     scene.add_object(Sphere::new(P(2.2, 0.35, 1.3), 0.35, green_index));
 
-    // gray sphere (metallic in future)
-    scene.add_object(Sphere::new(P(1.25, 0.65, -0.1), 0.65, gray_index));
+    // metallic sphere
+    scene.add_object(Sphere::new(P(1.25, 0.65, -0.1), 0.65, metallic_index));
+
+    scene.add_object(AABox {
+        v0: P(-0.25, 0.0, 0.95),
+        v1: P(0.75, 1.0, 1.95),
+        material_index: blue_index,
+    });
 
     // add ground plane
     scene.add_object(Plane::new(
