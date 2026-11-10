@@ -11,6 +11,7 @@ pub struct Vec3 {
 pub const UNIT_X: Vec3 = Vec3::new(1., 0., 0.);
 pub const UNIT_Y: Vec3 = Vec3::new(0., 1., 0.);
 pub const UNIT_Z: Vec3 = Vec3::new(0., 0., 1.);
+pub const ZERO_VEC: Vec3 = Vec3::new(0., 0., 0.);
 
 /// Color components are expected to be in interval 0..1
 pub type Color = Vec3;

@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, Mul, MulAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign};
 
 use crate::geometry::Vec3;
 
@@ -84,13 +84,24 @@ impl Index<usize> for Vec3 {
     }
 }
 
+impl IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => panic!("index out of bounds"),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geometry::V;
+    use crate::geometry::{V, ZERO_VEC, test_utils::assert_vec3_eq};
 
     #[test]
-    fn vector_indexes() {
+    fn vector_indexes_getter() {
         let v = V(1.0, 2.0, 3.0);
         assert_eq!(v[0], v.x);
         assert_eq!(v[1], v.y);
@@ -98,9 +109,25 @@ mod tests {
     }
 
     #[test]
+    fn vector_indexes_setter() {
+        let mut v = ZERO_VEC;
+        v[0] = 7.0;
+        v[1] = 4.3;
+        v[2] = -6.2;
+        assert_vec3_eq(&v, &V(7.0, 4.3, -6.2));
+    }
+
+    #[test]
     #[should_panic]
-    fn vector_bad_index() {
+    fn vector_bad_index_getter() {
         let vec = V(1.0, 2.0, 3.0);
         let _ = vec[3];
+    }
+
+    #[test]
+    #[should_panic]
+    fn vector_bad_index_setter() {
+        let mut vec = V(1.0, 2.0, 3.0);
+        vec[3] = 2.2;
     }
 }
