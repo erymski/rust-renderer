@@ -1,65 +1,72 @@
-use crate::geometry::{Hit, Hittable, Point3, Ray, V, is_zero};
+use crate::geometry::{DEFAULT_EPSILON, Hit, Hittable, Point3, Ray, V, ZERO_VEC, is_zero};
 
 /** Axis aligned box */
 #[derive(Debug, Clone, Copy)]
 pub struct AABox {
-    pub min: Point3,
-    pub max: Point3,
-    material_index: usize,
+    pub v0: Point3,
+    pub v1: Point3,
+    pub material_index: usize,
 }
 
 impl Hittable for AABox {
     fn intersect(&self, ray: &Ray) -> Option<Hit> {
-        let mut min_t = f64::MIN;
-        let mut max_t = f64::MAX;
+        let mut t_min = f64::MIN;
+        let mut t_max = f64::MAX;
 
-        let dir = ray.dir();
+        let ray_dir = ray.dir();
+        let from = ray.from;
+
+        let mut n_min = ZERO_VEC;
+        let mut n_max = ZERO_VEC;
 
         for i in 0..3 {
-            let dir = dir[i];
+            let dir = ray_dir[i];
             if is_zero(dir) {
                 todo!("implement it")
             }
 
-            // looking for *maximum* of minimums
-            let mut curr_min_t = (self.min[i] - ray.from[i]) / dir;
-            let mut curr_max_t = (self.max[i] - ray.from[i]) / dir;
-            if curr_max_t < curr_min_t {
-                std::mem::swap(&mut curr_min_t, &mut curr_max_t);
+            let mut t_in = (self.v0[i] - from[i]) / dir;
+            let mut t_out = (self.v1[i] - from[i]) / dir;
+            if t_out < t_in {
+                std::mem::swap(&mut t_in, &mut t_out);
             }
 
-            if curr_min_t > min_t {
-                min_t = curr_min_t;
+            let mut n_curr = ZERO_VEC;
+            n_curr[i] = if dir < 0.0 { 1.0 } else { -1.0 };
+
+            // looking for *maximum* of minimums
+            if t_in > t_min {
+                t_min = t_in;
+                n_min = n_curr;
             }
 
             // looking for *minimum* of maximuses
-            if curr_max_t < max_t {
-                max_t = curr_max_t;
+            if t_out < t_max {
+                t_max = t_out;
+                n_max = n_curr;
             }
-
-            println!("{}: {}, {}", i, curr_min_t, curr_max_t)
         }
 
-        println!("{}, {}", min_t, max_t);
-
-        if min_t > max_t {
+        if t_min > t_max {
             return None;
         }
 
-        if min_t < 0.0 && max_t < 0.0 {}
-
-        let t = if min_t < 0.0 { max_t } else { min_t };
+        let (t, n) = if t_min < 0.0 {
+            (t_max, n_max)
+        } else {
+            (t_min, n_min)
+        };
 
         // ray is going away of the box
-        if t < 0.0 {
+        if t <= DEFAULT_EPSILON {
             return None;
         }
 
-        let intersection = ray.from + dir * t;
+        let intersection = ray.from + ray_dir * t;
 
         Some(Hit {
             point: intersection,
-            normal: V(0.0, 0.0, 0.0),
+            normal: n,
             t: t,
             material_index: self.material_index,
         })
@@ -72,45 +79,56 @@ mod tests {
     use super::*;
     use crate::geometry::{P, V, test_utils::assert_vec3_eq};
 
-    /// box (0,0,0) - (5,5,5)
-    fn test_box() -> AABox {
-        AABox {
-            min: P(0.0, 0.0, 0.0),
-            max: P(5.0, 5.0, 5.0),
-            material_index: 3,
-        }
+    const MATERIAL_INDEX: usize = 3;
+
+    /// check the same box twice, by swapping the vertices
+    fn full_box_check(check: fn(AABox)) {
+        let mut b = AABox {
+            v0: P(0.0, 0.0, 0.0),
+            v1: P(5.0, 5.0, 5.0),
+            material_index: MATERIAL_INDEX,
+        };
+        check(b);
+
+        // should work with swapped vertices as well
+        std::mem::swap(&mut b.v0, &mut b.v1);
+        check(b);
     }
 
     #[test]
     fn box_diagonal() {
-        let b = test_box();
-        let r = Ray::new(P(6.0, 0.0, 1.0), V(-1.0, 1.0, 1.0));
+        full_box_check(|b: AABox| {
+            let r = Ray::new(P(6.0, 0.0, 1.0), V(-1.0, 1.0, 1.0));
+            let res = b.intersect(&r);
+            assert!(!res.is_none());
 
-        let res = b.intersect(&r);
-        assert!(!res.is_none());
-
-        let hit = res.unwrap();
-        assert_vec3_eq(&hit.point, &P(5.0, 1.0, 2.0));
+            let hit = res.unwrap();
+            assert_vec3_eq(&hit.point, &P(5.0, 1.0, 2.0));
+            assert_vec3_eq(&hit.normal, &V(1.0, 0.0, 0.0));
+            assert_eq!(hit.material_index, MATERIAL_INDEX);
+        });
     }
 
     #[test]
     fn box_no_intersect() {
-        let b = test_box();
-        let r = Ray::new(P(6.0, 0.0, 1.0), V(1.0, 1.0, 1.0));
+        full_box_check(|b: AABox| {
+            let r = Ray::new(P(6.0, 0.0, 1.0), V(1.0, 1.0, 1.0));
 
-        let res = b.intersect(&r);
-        assert!(res.is_none());
+            let res = b.intersect(&r);
+            assert!(res.is_none());
+        });
     }
 
     #[test]
     fn box_from_inside() {
-        let b = test_box();
-        let r = Ray::new(P(4.0, 3.0, 2.0), V(1.0, 1.0, 1.0));
+        full_box_check(|b: AABox| {
+            let r = Ray::new(P(4.0, 3.0, 2.0), V(1.0, 1.0, 1.0));
 
-        let res = b.intersect(&r);
-        assert!(!res.is_none());
+            let res = b.intersect(&r);
+            assert!(!res.is_none());
 
-        let hit = res.unwrap();
-        assert_vec3_eq(&hit.point, &P(5.0, 4.0, 3.0));
+            let hit = res.unwrap();
+            assert_vec3_eq(&hit.point, &P(5.0, 4.0, 3.0));
+        });
     }
 }

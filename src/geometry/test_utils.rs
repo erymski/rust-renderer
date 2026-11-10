@@ -9,7 +9,7 @@ pub fn assert_vec3_eq(a: &Vec3, b: &Vec3) {
 pub fn assert_vec3_eq_custom(a: &Vec3, b: &Vec3, epsilon: f64) {
     assert!(
         vec3_eq_custom(a, b, epsilon),
-        "points are not equal: {a:?} vs {b:?}"
+        "vectors are not equal: {a:?} vs {b:?}"
     );
 }
 
@@ -19,7 +19,7 @@ pub fn assert_vec3_neq(a: &Vec3, b: &Vec3) {
 pub fn assert_vec3_neq_custom(a: &Vec3, b: &Vec3, epsilon: f64) {
     assert!(
         !vec3_eq_custom(a, b, epsilon),
-        "points are not equal: {a:?} vs {b:?}"
+        "vectors are not equal: {a:?} vs {b:?}"
     );
 }
 
