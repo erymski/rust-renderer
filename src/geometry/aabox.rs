@@ -1,4 +1,4 @@
-use crate::geometry::{DEFAULT_EPSILON, Hit, Hittable, Point3, Ray, V, ZERO_VEC, is_zero};
+use crate::geometry::{DEFAULT_EPSILON, Hit, Hittable, Point3, Ray, ZERO_VEC, is_zero};
 
 /** Axis aligned box */
 #[derive(Debug, Clone, Copy)]
@@ -22,7 +22,7 @@ impl Hittable for AABox {
         for i in 0..3 {
             let dir = ray_dir[i];
             if is_zero(dir) {
-                todo!("implement it")
+                continue;
             }
 
             let mut t_in = (self.v0[i] - from[i]) / dir;
