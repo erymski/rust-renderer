@@ -120,6 +120,16 @@ mod tests {
     }
 
     #[test]
+    fn ray_from_box_face() {
+        full_box_check(|b: AABox| {
+            let r = Ray::new(P(5.0, 4.0, 3.0), V(1.0, 1.0, 1.0));
+
+            let res = b.intersect(&r);
+            assert!(res.is_none());
+        });
+    }
+
+    #[test]
     fn box_from_inside() {
         full_box_check(|b: AABox| {
             let r = Ray::new(P(4.0, 3.0, 2.0), V(1.0, 1.0, 1.0));
@@ -129,6 +139,19 @@ mod tests {
 
             let hit = res.unwrap();
             assert_vec3_eq(&hit.point, &P(5.0, 4.0, 3.0));
+        });
+    }
+
+    #[test]
+    fn box_perp_ray() {
+        full_box_check(|b| {
+            let r = Ray::new(P(4.0, 3.0, 2.0), V(1.0, 0.0, 0.0));
+
+            let res = b.intersect(&r);
+            assert!(!res.is_none());
+
+            let hit = res.unwrap();
+            assert_vec3_eq(&hit.point, &P(5.0, 3.0, 2.0));
         });
     }
 }
