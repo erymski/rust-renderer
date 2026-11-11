@@ -19,7 +19,7 @@ mod vec3_utils;
 
 use std::fmt::Debug;
 
-pub(crate) trait Hittable: Debug {
+pub(crate) trait Hittable: Debug + Sync + Send {
     fn intersect(&self, ray: &Ray) -> Option<Hit>;
 }
 

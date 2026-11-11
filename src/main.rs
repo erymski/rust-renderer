@@ -1,4 +1,5 @@
 use image::{Rgb, RgbImage};
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use std::time::Instant;
 
 mod geometry;
@@ -39,39 +40,43 @@ fn main() {
 
     let vp_center = camera.eye + camera.vp_dir;
 
-    let mut img = RgbImage::new(width_px, height_px);
+    let img = std::sync::Mutex::new(RgbImage::new(width_px, height_px));
 
     println!("Start rendering");
     let start = Instant::now();
 
-    for x_px in 0..width_px {
+    (0..width_px * height_px).into_par_iter().for_each(|i| {
+        let x_px = i % width_px;
+        let y_px = i / width_px;
+
         let offset_x_px = f64::from(x_px) - half_width_px;
         let offset_x_world = offset_x_px * pixel_width;
-        for y_px in 0..height_px {
-            let offset_y_px = half_height_px - f64::from(y_px);
-            let offset_y_world = offset_y_px * pixel_height;
 
-            // TODO: will not work with arbitrary camera orientation
-            let pixel_in_world = P(offset_x_world, offset_y_world, 0.0) + vp_center;
-            let ray = Ray::from_points(camera.eye, &pixel_in_world);
+        let offset_y_px = half_height_px - f64::from(y_px);
+        let offset_y_world = offset_y_px * pixel_height;
 
-            // let color = renderer.calc_point(&ray);
-            let color = renderer.go(
-                &ray,
-                &RenderingContext {
-                    x: x_px,
-                    y: y_px,
-                    width: width_px,
-                    height: height_px,
-                },
-            );
-            let squeezed_color = tone_mapper(&color);
+        // TODO: will not work with arbitrary camera orientation
+        let pixel_in_world = P(offset_x_world, offset_y_world, 0.0) + vp_center;
+        let ray = Ray::from_points(camera.eye, &pixel_in_world);
 
-            img.put_pixel(x_px, y_px, to_rgb(&squeezed_color));
-        }
-    }
+        // let color = renderer.calc_point(&ray);
+        let color = renderer.go(
+            &ray,
+            &RenderingContext {
+                x: x_px,
+                y: y_px,
+                width: width_px,
+                height: height_px,
+            },
+        );
+        let squeezed_color = tone_mapper(&color);
+
+        img.lock()
+            .unwrap()
+            .put_pixel(x_px, y_px, to_rgb(&squeezed_color));
+    });
 
     println!("Rendering took {:.3} sec", start.elapsed().as_secs_f64());
 
-    img.save("c:/delme/render3.png").unwrap();
+    img.lock().unwrap().save("c:/delme/render3.png").unwrap();
 }
