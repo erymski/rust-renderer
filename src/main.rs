@@ -5,10 +5,15 @@ use std::time::Instant;
 mod geometry;
 mod renderer;
 mod scene_loader;
+mod utils;
 
 use geometry::{Color, P, Ray, RenderingSet, ToneMapper, color_clamp};
 
-use crate::{geometry::RenderingContext, scene_loader::second_set};
+use crate::{
+    geometry::RenderingContext,
+    scene_loader::second_set,
+    utils::{ExecutionParams, ImageParams, get_params},
+};
 
 #[allow(clippy::cast_possible_truncation)]
 fn to_rgb(color: &Color) -> Rgb<u8> {
@@ -20,15 +25,28 @@ fn to_rgb(color: &Color) -> Rgb<u8> {
 }
 
 fn main() {
+    let params = get_params();
+
     let tone_mapper: ToneMapper = color_clamp; //;color_reinhard; //color_identity;
 
-    let width_px = 1024;
-    let height_px = 768;
-
-    let width_world: f64 = 4.0;
-    let height_world: f64 = 3.0;
-
     let RenderingSet { scene, camera } = second_set();
+
+    run(params, tone_mapper, scene, camera);
+}
+
+fn run(
+    params: ExecutionParams,
+    tone_mapper: fn(&geometry::Vec3) -> geometry::Vec3,
+    scene: geometry::Scene,
+    camera: geometry::Camera,
+) {
+    let width_world: f64 = 4.0; // TODO:
+    let height_world: f64 = 3.0; // TODO:
+
+    let ImageParams {
+        width_px,
+        height_px,
+    } = params.rendering;
 
     let half_width_px = f64::from(width_px) / 2.0;
     let half_height_px = f64::from(height_px) / 2.0;
@@ -78,5 +96,5 @@ fn main() {
 
     println!("Rendering took {:.3} sec", start.elapsed().as_secs_f64());
 
-    img.lock().unwrap().save("c:/delme/render3.png").unwrap();
+    img.lock().unwrap().save(params.output_file).unwrap();
 }
